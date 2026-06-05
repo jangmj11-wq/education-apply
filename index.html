@@ -402,14 +402,16 @@ async function sGet(k) {
     _fb.init();
     const { doc, getDoc } = window._firebaseFirestore;
     const snap = await getDoc(doc(_fb.db, '_store', k));
-    return snap.exists() ? snap.data().v : null;
+    if (!snap.exists()) return null;
+    const v = snap.data().v;
+    return v;
   } catch { return null; }
 }
 async function sSet(k, v) {
   try {
     _fb.init();
     const { doc, setDoc } = window._firebaseFirestore;
-    await setDoc(doc(_fb.db, '_store', k), { v });
+    await setDoc(doc(_fb.db, '_store', k), { v: v });
   } catch(e) { console.error(e); }
 }
 
@@ -601,6 +603,16 @@ function onCourseChange(){
   if(dates.length===1)dateSel.value=dates[0];
 }
 
+function onCourseChange(){
+  const chosen=document.getElementById('courseName').value;
+  const dateSel=document.getElementById('eduDate');
+  dateSel.innerHTML='<option value="">교육일을 선택하세요</option>';
+  if(!chosen){dateSel.disabled=true;return;}
+  const dates=(window._courseData||[]).filter(c=>c.name===chosen).map(c=>c.date);
+  dates.forEach(d=>{const o=document.createElement('option');o.value=d;o.textContent=d;dateSel.appendChild(o);});
+  dateSel.disabled=false;
+  if(dates.length===1)dateSel.value=dates[0];
+}
 // ─── 협약기업 ───
 function loadBizAdmin(){
   const list=sGet('bizList')||[];
@@ -651,14 +663,14 @@ function downloadBizSample(){
 }
 
 // ─── 사업자번호 자동확인 ───
-let bizChecked=false,bizStatusVal='';
-function onBizInput(el){
+async function onBizInput(el){
   el.value=fmtBiz(el.value);
   const digits=el.value.replace(/\D/g,'');
   const box=document.getElementById('bizStatus');
   if(digits.length<10){box.style.display='none';bizChecked=false;bizStatusVal='';return;}
   const num=fmtBiz(digits);
-  const list=sGet('bizList')||[];
+  const raw=await sGet('bizList');
+  const list=Array.isArray(raw)?raw:[];
   const found=list.find(b=>b.num===num);
   box.style.display='block';
   if(found){
@@ -666,7 +678,7 @@ function onBizInput(el){
     box.innerHTML=`<strong>✅ ${found.name||num}</strong>기존 협약기업으로 확인되었습니다. 접수가 자동 확정됩니다.`;
     bizStatusVal='confirmed';
   } else {
-    const fi=sGet('_contractFile');
+    const fi=await sGet('_contractFile');
     const dlHtml=fi?`<a class="download-link" onclick="downloadContract()">📥 협약서 다운로드</a>`:`<span style="font-size:12px;color:#999;">※ 협약서 파일은 담당자에게 문의해 주세요.</span>`;
     box.className='status-box pending';
     box.innerHTML=`<strong>⏳ 신규 업체입니다</strong>지원서 제출 후 협약서를 다운받아 작성 후 추가 제출바랍니다.<br>${dlHtml}`;
@@ -687,17 +699,18 @@ function confirmPrivacy(){
 }
 
 // ─── 제출 ───
-function submitForm(){
+async function submitForm(){
   if(!document.getElementById('confirmCheck').checked){alert('안내 내용을 확인 후 체크해 주세요.');return;}
   if(!privacyAgreed){alert('개인정보동의서를 확인 후 동의해 주세요.');return;}
   const vals={courseName:document.getElementById('courseName').value.trim(),eduDate:document.getElementById('eduDate').value,name:document.getElementById('name').value.trim(),rrn:document.getElementById('rrn').value.trim(),phone:document.getElementById('phone').value.trim(),bizNum:document.getElementById('bizNum').value.trim()};
   const labels={courseName:'과정명',eduDate:'교육일',name:'이름',rrn:'주민등록번호',phone:'연락처',bizNum:'사업자등록번호'};
   for(const[k,v] of Object.entries(vals)){if(!v){alert(`${labels[k]}을(를) 입력/선택해 주세요.`);return;}}
   if(!bizChecked){alert('사업자등록번호를 입력해 주세요.');return;}
-  const apps=sGet('applications')||[];
+  const raw=await sGet('applications');
+  const apps=Array.isArray(raw)?raw:[];
   const masked=vals.rrn.slice(0,8)+'******';
   apps.push({id:Date.now(),courseName:vals.courseName,eduDate:vals.eduDate,name:vals.name,rrnMasked:masked,rrnFull:btoa(vals.rrn),phone:vals.phone,bizNum:vals.bizNum,status:bizStatusVal,createdAt:new Date().toLocaleString('ko-KR')});
-  sSet('applications',apps);
+  await sSet('applications',apps);
   document.getElementById(bizStatusVal==='confirmed'?'modalConfirmed':'modalPending').classList.add('open');
 }
 function closeModal(id){
@@ -715,8 +728,9 @@ function closeModal(id){
 }
 
 // ─── 접수 목록 ───
-function renderList(){
-  const apps=sGet('applications')||[];
+async function renderList(){
+  const raw=await sGet('applications');
+  const apps=Array.isArray(raw)?raw:[];
   const status=document.getElementById('filterStatus')?.value||'';
   const name=document.getElementById('filterName')?.value||'';
   const biz=document.getElementById('filterBiz')?.value||'';
@@ -738,12 +752,16 @@ function renderList(){
       <td><button class="del-btn" onclick="deleteApp(${a.id})">삭제</button></td>
     </tr>`).join('');
 }
-function deleteApp(id){
+async function deleteApp(id){
   if(!confirm('삭제하시겠습니까?'))return;
-  sSet('applications',(sGet('applications')||[]).filter(a=>a.id!==id));renderList();
+  const raw=await sGet('applications');
+  const apps=Array.isArray(raw)?raw:[];
+  await sSet('applications',apps.filter(a=>a.id!==id));
+  renderList();
 }
-function downloadCSV(){
-  const apps=sGet('applications')||[];
+async function downloadCSV(){
+  const raw=await sGet('applications');
+  const apps=Array.isArray(raw)?raw:[];
   if(!apps.length){alert('데이터가 없습니다.');return;}
   const header=['No','과정명','교육일','이름','주민번호','연락처','사업자번호','상태','접수일시'];
   const rows=apps.map((a,i)=>[i+1,a.courseName,a.eduDate,a.name,atob(a.rrnFull||''),a.phone,a.bizNum,a.status==='confirmed'?'접수확정':'접수대기',a.createdAt]);
