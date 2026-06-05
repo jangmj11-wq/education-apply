@@ -388,34 +388,32 @@
 
 <script>
 // ─── Storage (Firebase Firestore) ───
-const _fb = {
-  db: null,
-  init() {
-    if (this.db) return;
-    const app = window._firebaseApp;
-    this.db = window._firebaseFirestore.getFirestore(app);
-  }
-};
+const _fb = { db: null, init() { if(this.db)return; this.db=window._firebaseFirestore.getFirestore(window._firebaseApp); } };
 
 async function sGet(k) {
   try {
     _fb.init();
-    const { doc, getDoc } = window._firebaseFirestore;
-    const snap = await getDoc(doc(_fb.db, '_store', k));
-    if (!snap.exists()) return null;
-    const v = snap.data().v;
-    return v;
-  } catch { return null; }
+    const {doc,getDoc}=window._firebaseFirestore;
+    const snap=await getDoc(doc(_fb.db,'_store',k));
+    if(!snap.exists())return null;
+    const raw=snap.data().v;
+    // Firestore에서 배열이 object로 올 수 있으므로 JSON 왕복으로 안전하게 처리
+    return JSON.parse(JSON.stringify(raw));
+  } catch(e){ console.error('sGet error',k,e); return null; }
 }
-async function sSet(k, v) {
+async function sSet(k,v) {
   try {
     _fb.init();
-    const { doc, setDoc } = window._firebaseFirestore;
-    await setDoc(doc(_fb.db, '_store', k), { v: v });
-  } catch(e) { console.error(e); }
+    const {doc,setDoc}=window._firebaseFirestore;
+    // JSON 왕복으로 순수 plain object/array로 변환 후 저장
+    await setDoc(doc(_fb.db,'_store',k),{v:JSON.parse(JSON.stringify(v))});
+  } catch(e){ console.error('sSet error',k,e); }
 }
 
-// ─── 색상 팔레트 ───
+// 배열 보장 헬퍼
+function toArr(v){ return Array.isArray(v)?v:(v&&typeof v==='object'?Object.values(v):[]); }
+// 객체 보장 헬퍼  
+function toObj(v){ return (v&&typeof v==='object'&&!Array.isArray(v))?v:{}; }
 const COLORS=[
   {dot:'#185FA5',chipBg:'#E6F1FB',chipColor:'#0C447C',chipBorder:'#B5D4F4'},
   {dot:'#0F6E56',chipBg:'#E1F5EE',chipColor:'#085041',chipBorder:'#9FE1CB'},
