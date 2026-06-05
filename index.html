@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>교육생 지원서</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Malgun Gothic', sans-serif; background: #f0f4f8; min-height: 100vh; }
+
+  .header { background: #1a4fa0; color: white; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; }
+  .header h1 { font-size: 16px; font-weight: 700; }
+  .nav-btns { display: flex; gap: 8px; }
+  .nav-btn { background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.4); padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; }
+  .nav-btn:hover { background: white; color: #1a4fa0; }
+
+  /* 페이지 전환 */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* 지원서 */
+  .apply-wrap { max-width: 720px; margin: 32px auto; padding: 0 16px 40px; }
+  .card { background: white; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); padding: 28px; margin-bottom: 20px; }
+  .card h2 { font-size: 16px; color: #1a4fa0; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #e8f0fe; }
+  .form-group { margin-bottom: 16px; }
+  .form-group label { display: block; font-size: 13px; font-weight: 600; color: #444; margin-bottom: 6px; }
+  .req { color: #e53e3e; margin-left: 2px; }
+  .form-group input, .form-group select { width: 100%; padding: 10px 12px; border: 1.5px solid #d1d5db; border-radius: 8px; font-size: 14px; background: white; }
+  .form-group input:focus, .form-group select:focus { outline: none; border-color: #1a4fa0; }
+  .form-group select:disabled { background: #f3f4f6; color: #999; }
+  .notice { background: #e8f0fe; border-radius: 8px; padding: 12px 16px; font-size: 13px; color: #1a4fa0; margin-bottom: 20px; line-height: 1.6; }
+  .status-box { margin-top: 10px; padding: 14px 16px; border-radius: 8px; font-size: 14px; display: none; }
+  .status-box.confirmed { background: #e6f4ea; border: 1px solid #4caf50; color: #2e7d32; }
+  .status-box.pending { background: #fff8e1; border: 1px solid #ffc107; color: #856404; }
+  .status-box strong { display: block; margin-bottom: 4px; font-size: 15px; }
+  .download-link { display: inline-flex; align-items: center; gap: 6px; margin-top: 10px; background: #fff3cd; border: 1px solid #ffc107; color: #856404; padding: 7px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; }
+  .submit-btn { width: 100%; padding: 14px; background: #1a4fa0; color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 8px; }
+  .submit-btn:hover { background: #154188; }
+  .course-empty-notice { background: #fff8e1; border: 1px solid #ffc107; border-radius: 8px; padding: 12px 16px; font-size: 13px; color: #856404; margin-bottom: 16px; display: none; }
+
+  /* 푸터 */
+  .footer-info { margin-top: 28px; padding: 20px; background: white; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .footer-qr { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .footer-qr img { width: 90px; height: 90px; border-radius: 6px; border: 1px solid #e2e8f0; }
+  .footer-qr span { font-size: 11px; color: #888; }
+
+  /* 관리자 오버레이 */
+  .admin-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; align-items: center; justify-content: center; }
+  .admin-overlay.open { display: flex; }
+  .admin-box { background: white; border-radius: 14px; padding: 32px; max-width: 360px; width: 90%; }
+  .admin-box h2 { font-size: 17px; color: #1a4fa0; margin-bottom: 20px; }
+  .admin-close { float: right; background: none; border: none; font-size: 20px; cursor: pointer; color: #888; margin-top: -4px; }
+
+  /* 관리자 메인 */
+  .admin-wrap { max-width: 980px; margin: 32px auto; padding: 0 16px 40px; }
+  .tab-bar { display: flex; margin-bottom: 20px; border-bottom: 2px solid #e2e8f0; overflow-x: auto; }
+  .tab { padding: 10px 18px; cursor: pointer; font-size: 14px; font-weight: 600; color: #888; border-bottom: 3px solid transparent; margin-bottom: -2px; white-space: nowrap; }
+  .tab.active { color: #1a4fa0; border-bottom-color: #1a4fa0; }
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { background: #1a4fa0; color: white; padding: 10px 12px; text-align: left; white-space: nowrap; }
+  td { padding: 9px 12px; border-bottom: 1px solid #e2e8f0; }
+  tr:hover td { background: #f8faff; }
+  .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+  .badge.confirmed { background: #e6f4ea; color: #2e7d32; }
+  .badge.pending { background: #fff8e1; color: #856404; }
+  .action-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 8px; }
+  .dl-btn { padding: 8px 16px; background: #28a745; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; }
+  .del-btn { padding: 3px 10px; background: #fee2e2; color: #c0392b; border: 1px solid #fca5a5; border-radius: 4px; cursor: pointer; font-size: 12px; }
+  .filter-row { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+  .filter-row select, .filter-row input { padding: 7px 10px; border: 1.5px solid #d1d5db; border-radius: 6px; font-size: 13px; }
+  .count-badge { background: #e8f0fe; color: #1a4fa0; border-radius: 20px; padding: 2px 10px; font-size: 13px; font-weight: 600; }
+  .add-row { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+  .add-row input { flex: 1; min-width: 140px; padding: 10px 12px; border: 1.5px solid #d1d5db; border-radius: 8px; font-size: 14px; }
+  .add-btn { padding: 10px 16px; background: #1a4fa0; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; white-space: nowrap; }
+  .list-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: #f8faff; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 8px; flex-wrap: wrap; gap: 6px; }
+  .file-upload-area { border: 2px dashed #c7d7f0; border-radius: 10px; padding: 24px; text-align: center; cursor: pointer; margin-bottom: 12px; }
+  .file-upload-area:hover { border-color: #1a4fa0; background: #f0f4f8; }
+  .file-upload-area input { display: none; }
+  .current-file { font-size: 13px; color: #555; background: #f0f4f8; padding: 8px 12px; border-radius: 6px; margin-bottom: 12px; }
+  .empty { text-align: center; color: #999; padding: 30px; font-size: 14px; }
+  .loading { text-align: center; color: #888; padding: 20px; font-size: 14px; }
+
+  /* 모달 */
+  .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; align-items: center; justify-content: center; }
+  .modal-bg.open { display: flex; }
+  .modal { background: white; border-radius: 14px; padding: 28px; max-width: 400px; width: 90%; text-align: center; }
+  .modal h3 { font-size: 18px; margin-bottom: 10px; }
+  .modal p { font-size: 14px; color: #555; margin-bottom: 20px; line-height: 1.6; white-space: pre-line; }
+  .modal-btn { padding: 10px 28px; background: #1a4fa0; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 15px; font-weight: 700; }
+  .dl-box { background: #FAEEDA; border: 1.5px solid #EF9F27; border-radius: 10px; padding: 16px; margin-bottom: 20px; }
+  .dl-box p { font-size: 13px; color: #633806; margin: 0 0 12px; line-height: 1.6; }
+  .dl-modal-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 12px; background: #BA7517; color: #FAEEDA; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; }
+  .confirm-only-btn { display: block; width: 100%; padding: 11px; border: 0.5px solid #d1d5db; background: transparent; border-radius: 8px; font-size: 14px; color: #666; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>제주관광대학교 공동훈련센터 교육과정 지원서 접수 시스템</h1>
+  <div class="nav-btns">
+    <button class="nav-btn" onclick="showPage('apply')">지원서 작성</button>
+    <button class="nav-btn" onclick="openAdminLogin()">관리자</button>
+  </div>
+</div>
+
+<!-- ===== 지원서 페이지 ===== -->
+<div id="page-apply" class="page active">
+  <div class="apply-wrap">
+    <div class="notice">✅ 아래 양식을 작성해 주세요. <strong>주민등록번호는 암호화</strong>되어 안전하게 저장됩니다.</div>
+
+    <div class="card">
+      <h2>📋 교육 정보</h2>
+      <div id="courseEmptyNotice" class="course-empty-notice">⚠️ 현재 등록된 교육과정이 없습니다. 담당자에게 문의해 주세요.</div>
+      <div class="form-group">
+        <label>신청 과정명 <span class="req">*</span></label>
+        <select id="courseName" onchange="onCourseChange()"><option value="">과정을 선택하세요</option></select>
+      </div>
+      <div class="form-group">
+        <label>교육일 <span class="req">*</span></label>
+        <select id="eduDate" disabled><option value="">과정을 먼저 선택하세요</option></select>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>👤 인적사항</h2>
+      <div class="form-group">
+        <label>이름 <span class="req">*</span></label>
+        <input type="text" id="name" placeholder="홍길동">
+      </div>
+      <div class="form-group">
+        <label>주민등록번호 <span class="req">*</span> <span style="font-size:11px;color:#888;font-weight:400;">(뒷자리 포함, 저장 시 암호화)</span></label>
+        <input type="text" id="rrn" placeholder="000000-0000000" maxlength="14" inputmode="numeric" oninput="formatRrn(this)">
+      </div>
+      <div class="form-group">
+        <label>연락처 <span class="req">*</span></label>
+        <input type="text" id="phone" placeholder="010-0000-0000" maxlength="13" inputmode="numeric" oninput="formatPhone(this)">
+      </div>
+      <div class="form-group">
+        <label>개인정보동의 <span class="req">*</span></label>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <button type="button" onclick="openPrivacyModal()" style="padding:8px 16px;background:#e8f0fe;color:#1a4fa0;border:1px solid #7aa0d4;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;">📄 동의서 보기</button>
+          <span id="privacyStatus" style="font-size:13px;color:#999;">동의서를 확인 후 동의해 주세요.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>🏢 고용보험 가입 사업장</h2>
+      <div class="form-group">
+        <label>사업자등록번호 <span class="req">*</span></label>
+        <input type="text" id="bizNum" placeholder="숫자 10자리 입력" maxlength="12" inputmode="numeric" oninput="onBizInput(this)">
+        <div id="bizStatus" class="status-box"></div>
+      </div>
+    </div>
+
+    <div style="background:#f8faff;border:1.5px solid #c7d7f0;border-radius:10px;padding:16px 18px;margin-bottom:12px;">
+      <p style="font-size:13px;color:#444;line-height:1.8;margin-bottom:12px;">※ 본 지원서는 접수 신청이며, 최종 접수 여부는 공동훈련센터에서 접수 확정 안내문자를 개별 통보드리겠습니다.</p>
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:14px;font-weight:600;color:#1a4fa0;">
+        <input type="checkbox" id="confirmCheck" style="width:18px;height:18px;cursor:pointer;">
+        위 내용을 확인했습니다.
+      </label>
+    </div>
+
+    <button class="submit-btn" onclick="submitForm()">지원서 제출하기</button>
+
+    <div class="footer-info">
+      <img src="https://jtc.jtu.ac.kr/wp-content/uploads/2021/03/logo.png" alt="제주관광대학교 로고" style="height:56px;object-fit:contain;" onerror="this.style.display='none'">
+      <div style="flex:1;min-width:200px;">
+        <div style="font-size:15px;font-weight:700;color:#1a4fa0;margin-bottom:6px;">제주관광대학교 공동훈련센터</div>
+        <div style="font-size:13px;color:#555;line-height:1.9;">
+          🌐 <a href="https://jtc.jtu.ac.kr/" target="_blank" style="color:#1a4fa0;text-decoration:none;">https://jtc.jtu.ac.kr/</a><br>
+          📞 T. 064-754-5860~1 &nbsp;|&nbsp; 📠 F. 064-754-5864
+        </div>
+      </div>
+      <div class="footer-qr" id="footerQr" style="display:none;">
+        <img id="qrImgDisplay" alt="카카오톡 채팅 QR">
+        <span>카카오톡 채팅</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 관리자 페이지 ===== -->
+<div id="page-admin" class="page">
+  <div class="admin-wrap">
+    <div class="tab-bar">
+      <div class="tab active" onclick="adminTab('list',this)">📋 접수 목록</div>
+      <div class="tab" onclick="adminTab('course',this)">📚 교육과정 관리</div>
+      <div class="tab" onclick="adminTab('biz',this)">🏢 협약기업 관리</div>
+      <div class="tab" onclick="adminTab('file',this)">📁 파일 관리</div>
+    </div>
+
+    <!-- 접수 목록 -->
+    <div id="tab-list">
+      <div class="card" style="padding:20px;">
+        <div class="action-bar">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span style="font-weight:700;font-size:15px;">접수 목록</span>
+            <span class="count-badge" id="totalCount">0건</span>
+          </div>
+          <button class="dl-btn" onclick="downloadCSV()">⬇ CSV 다운로드</button>
+        </div>
+        <div class="filter-row">
+          <select id="filterStatus" onchange="renderList()">
+            <option value="">전체 상태</option>
+            <option value="confirmed">접수확정</option>
+            <option value="pending">접수대기</option>
+          </select>
+          <input type="text" id="filterName" placeholder="이름 검색" oninput="renderList()">
+          <input type="text" id="filterBiz" placeholder="사업자번호 검색" oninput="renderList()">
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>No</th><th>과정명</th><th>교육일</th><th>이름</th><th>주민번호</th><th>연락처</th><th>사업자번호</th><th>상태</th><th>접수일시</th><th></th></tr></thead>
+            <tbody id="appListBody"><tr><td colspan="10" class="empty">데이터 없음</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 교육과정 -->
+    <div id="tab-course" style="display:none;">
+      <div class="card">
+        <h2>📚 교육과정 등록</h2>
+        <div class="add-row">
+          <input type="text" id="newCourseName" placeholder="과정명 입력">
+          <input type="date" id="newCourseDate">
+          <button class="add-btn" onclick="addCourse()">+ 추가</button>
+        </div>
+        <div id="courseList"><div class="empty">등록된 교육과정이 없습니다.</div></div>
+      </div>
+    </div>
+
+    <!-- 협약기업 -->
+    <div id="tab-biz" style="display:none;">
+      <div class="card">
+        <h2>🏢 협약기업 관리</h2>
+        <div class="add-row">
+          <input type="text" id="newBizNum" placeholder="사업자등록번호 (000-00-00000)" maxlength="12" oninput="formatBizInput(this)">
+          <input type="text" id="newBizName" placeholder="기업명">
+          <button class="add-btn" onclick="addBiz()">+ 추가</button>
+        </div>
+        <div style="margin-bottom:14px;display:flex;gap:8px;flex-wrap:wrap;">
+          <label style="display:flex;align-items:center;gap:8px;padding:8px 14px;background:#f0f4f8;border:1.5px dashed #7aa0d4;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;color:#1a4fa0;">
+            📂 TXT 파일 일괄 등록
+            <input type="file" id="bizTxtFile" accept=".txt" style="display:none;" onchange="importBizTxt(this)">
+          </label>
+          <button class="add-btn" style="background:#e8f0fe;color:#1a4fa0;border:1px solid #7aa0d4;" onclick="downloadBizSample()">📥 양식 다운로드</button>
+        </div>
+        <div style="font-size:12px;color:#888;background:#f8faff;padding:8px 12px;border-radius:6px;margin-bottom:12px;">형식: 사업자번호,기업명 (예: 123-45-67890,홍길동주식회사)</div>
+        <div id="bizList"><div class="empty">등록된 협약기업이 없습니다.</div></div>
+      </div>
+    </div>
+
+    <!-- 파일 관리 -->
+    <div id="tab-file" style="display:none;">
+      <div class="card">
+        <h2>📁 협약서 파일 업로드</h2>
+        <div class="file-upload-area" onclick="document.getElementById('contractFile').click()">
+          <input type="file" id="contractFile" accept=".pdf,.doc,.docx,.hwp" onchange="handleFileUpload(this)">
+          <div style="font-size:32px;margin-bottom:8px;">📄</div>
+          <div style="font-size:14px;font-weight:600;color:#1a4fa0;">클릭하여 파일 선택</div>
+          <div style="font-size:12px;color:#888;margin-top:4px;">PDF, DOC, DOCX, HWP (최대 4MB)</div>
+        </div>
+        <div id="currentFileInfo" class="current-file" style="display:none;"></div>
+      </div>
+      <div class="card">
+        <h2>📷 카카오톡 QR 이미지</h2>
+        <div class="file-upload-area" onclick="document.getElementById('qrFile').click()">
+          <input type="file" id="qrFile" accept=".jpg,.jpeg,.png" onchange="handleQrUpload(this)">
+          <div style="font-size:32px;margin-bottom:8px;">📷</div>
+          <div style="font-size:14px;font-weight:600;color:#1a4fa0;">클릭하여 QR 이미지 선택</div>
+          <div style="font-size:12px;color:#888;margin-top:4px;">JPG, PNG (최대 1MB)</div>
+        </div>
+        <div id="currentQrInfo" class="current-file" style="display:none;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 관리자 로그인 오버레이 ===== -->
+<div class="admin-overlay" id="adminLoginOverlay">
+  <div class="admin-box">
+    <button class="admin-close" onclick="closeAdminLogin()">✕</button>
+    <h2>🔐 관리자 로그인</h2>
+    <div class="form-group">
+      <label>비밀번호</label>
+      <input type="password" id="adminPw" placeholder="비밀번호 입력" onkeydown="if(event.key==='Enter')adminLogin()">
+    </div>
+    <button class="submit-btn" onclick="adminLogin()">로그인</button>
+  </div>
+</div>
+
+<!-- 개인정보동의 모달 -->
+<div class="modal-bg" id="privacyModal">
+  <div class="modal" style="max-width:540px;text-align:left;padding:0;overflow:hidden;">
+    <div style="background:#1a4fa0;color:white;padding:16px 20px;font-size:15px;font-weight:700;">📄 개인정보의 수집 이용 및 제공에 관한 동의서</div>
+    <div style="padding:20px;max-height:400px;overflow-y:auto;font-size:13px;line-height:1.9;color:#333;border-bottom:1px solid #e2e8f0;">
+      <p style="margin-bottom:14px;">1. 고용노동부에서는 근로자 직업능력개발훈련 지원제도 운영에 있어 개인을 고유하게 구별하기 위해 부여된 식별정보(주민등록번호 등)를 포함한 개인정보를 다음과 같이 직업능력개발정보망(HRD-Net)에 수집·이용하고 있습니다.</p>
+      <p style="margin-bottom:6px;">⚪ <b>개인정보의 수집·이용 목적:</b> 훈련비용 지원, 개인별 훈련이력 관리, 정부의 직업능력개발훈련제도 실적·성과 평가, 모니터링 등에 활용</p>
+      <p style="margin-bottom:6px;">⚪ <b>수집하는 개인정보 항목:</b> 성명, 주민등록번호(필수)/지문(선택)/휴대전화번호</p>
+      <p style="margin-bottom:14px;">⚪ <b>개인정보의 보유 및 이용기간:</b> 직업능력개발정보망(HRD-Net)에서 수집. 계속 관리</p>
+      <p style="margin-bottom:14px;color:#856404;background:#fff8e1;padding:10px;border-radius:6px;">※ 개인정보 수집·이용에 동의하지 않을 수 있으나, 동의를 거부할 경우에는 해당 서비스를 제공받을 수 없습니다.</p>
+      <p style="margin-bottom:14px;">2. 사업주 직업능력개발훈련 지원제도 운영을 위해서는 개인을 고유하게 구별하기 위해 부여된 식별정보(주민등록번호 등)를 포함한 개인정보가 필요하며, 고용노동부는 「개인정보 보호법」에 따라 훈련생으로부터 제공받는 개인정보를 보호하여야 합니다.</p>
+      <p style="margin-bottom:14px;">3. 고용노동부는 개인정보를 처리 목적에 필요한 범위에서 적합하게 처리하고 그 목적 외의 용도로 사용하지 않으며 개인정보를 제공한 훈련생은 언제나 자신이 입력한 개인정보의 열람·수정을 신청할 수 있습니다.</p>
+      <p>4. 본인은 위 1.~3.의 내용에 따른 사업주 직업능력개발훈련 지원제도 운영을 위해 개인식별정보(주민등록번호 등)를 제공할 것을 동의합니다.</p>
+    </div>
+    <div style="padding:16px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:14px;font-weight:600;color:#1a4fa0;">
+        <input type="checkbox" id="privacyCheck" style="width:18px;height:18px;cursor:pointer;">
+        위 개인정보 수집·이용에 동의합니다.
+      </label>
+      <div style="display:flex;gap:8px;">
+        <button onclick="closePrivacyModal()" style="padding:9px 18px;background:#f3f4f6;color:#555;border:1px solid #d1d5db;border-radius:8px;cursor:pointer;font-size:13px;">닫기</button>
+        <button onclick="confirmPrivacy()" style="padding:9px 18px;background:#1a4fa0;color:white;border:none;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;">확인</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 접수확정 모달 -->
+<div class="modal-bg" id="modalConfirmed">
+  <div class="modal">
+    <div style="font-size:52px;margin-bottom:12px;">✅</div>
+    <h3>지원서 제출이 완료되었습니다</h3>
+    <p>현재 '접수 신청' 상태이며, 최종 접수는 담당자 확인 후 안내문자로 개별 통보드리겠습니다.</p>
+    <button class="modal-btn" onclick="closeModal('modalConfirmed')">확인</button>
+  </div>
+</div>
+
+<!-- 접수대기 모달 -->
+<div class="modal-bg" id="modalPending">
+  <div class="modal">
+    <div style="font-size:52px;margin-bottom:12px;">⏳</div>
+    <h3>접수 대기 중입니다</h3>
+    <p>협약서를 제출해 주셔야 최종 접수가 확정됩니다.</p>
+    <div class="dl-box">
+      <p>아래 버튼으로 협약서를 다운받아<br>작성 후 담당자에게 제출해 주세요.</p>
+      <button class="dl-modal-btn" onclick="downloadContract()">📥 협약서 다운로드</button>
+    </div>
+    <button class="confirm-only-btn" onclick="closeModal('modalPending')">확인</button>
+  </div>
+</div>
+
+<script>
+// ─── Storage (localStorage) ───
+function sGet(k) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : null; } catch { return null; } }
+function sSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e) { console.error(e); } }
+
+// ─── 포맷 ───
+function formatRrn(el) { let v=el.value.replace(/\D/g,''); if(v.length>6) v=v.slice(0,6)+'-'+v.slice(6,13); el.value=v; }
+function formatPhone(el) { let v=el.value.replace(/\D/g,''); if(v.length>3&&v.length<=7) v=v.slice(0,3)+'-'+v.slice(3); else if(v.length>7) v=v.slice(0,3)+'-'+v.slice(3,7)+'-'+v.slice(7,11); el.value=v; }
+function formatBizInput(el) { el.value=fmtBiz(el.value); }
+function fmtBiz(val) { let v=val.replace(/\D/g,''); if(v.length>3&&v.length<=5) v=v.slice(0,3)+'-'+v.slice(3); else if(v.length>5) v=v.slice(0,3)+'-'+v.slice(3,5)+'-'+v.slice(5,10); return v; }
+
+// ─── 페이지 ───
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  if(name==='apply') { loadCourseDropdown(); loadQrDisplay(); }
+}
+
+// ─── 관리자 로그인 오버레이 ───
+function openAdminLogin() {
+  if(sessionStorage.getItem('adminAuth')==='ok') { showPage('admin'); renderList(); loadCourseAdmin(); loadBizAdmin(); return; }
+  document.getElementById('adminPw').value='';
+  document.getElementById('adminLoginOverlay').classList.add('open');
+}
+function closeAdminLogin() { document.getElementById('adminLoginOverlay').classList.remove('open'); }
+function adminLogin() {
+  const pw = document.getElementById('adminPw').value;
+  if(pw==='5862') {
+    sessionStorage.setItem('adminAuth','ok');
+    closeAdminLogin();
+    showPage('admin');
+    renderList(); loadCourseAdmin(); loadBizAdmin();
+  } else { alert('비밀번호가 틀렸습니다.'); }
+}
+
+// ─── 관리자 탭 ───
+function adminTab(t, el) {
+  document.querySelectorAll('.tab').forEach(e=>e.classList.remove('active'));
+  ['list','course','biz','file'].forEach(id=>document.getElementById('tab-'+id).style.display='none');
+  document.getElementById('tab-'+t).style.display='block';
+  el.classList.add('active');
+  if(t==='list') renderList();
+  if(t==='course') loadCourseAdmin();
+  if(t==='biz') loadBizAdmin();
+  if(t==='file') { loadFileInfo(); loadQrInfo(); }
+}
+
+// ─── 접수 목록 ───
+function renderList() {
+  const apps = sGet('applications') || [];
+  const status = document.getElementById('filterStatus')?.value||'';
+  const name = document.getElementById('filterName')?.value||'';
+  const biz = document.getElementById('filterBiz')?.value||'';
+  const filtered = apps.filter(a=>(!status||a.status===status)&&(!name||a.name.includes(name))&&(!biz||a.bizNum.includes(biz)));
+  document.getElementById('totalCount').textContent=filtered.length+'건';
+  const body=document.getElementById('appListBody');
+  if(!filtered.length){body.innerHTML='<tr><td colspan="10" class="empty">접수된 지원서가 없습니다.</td></tr>';return;}
+  body.innerHTML=filtered.map((a,i)=>`
+    <tr>
+      <td>${i+1}</td>
+      <td style="max-width:120px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${a.courseName}</td>
+      <td style="white-space:nowrap;">${a.eduDate}</td>
+      <td>${a.name}</td>
+      <td style="font-family:monospace;">${a.rrnMasked}</td>
+      <td>${a.phone}</td>
+      <td style="font-family:monospace;">${a.bizNum}</td>
+      <td><span class="badge ${a.status}">${a.status==='confirmed'?'접수확정':'접수대기'}</span></td>
+      <td style="white-space:nowrap;">${a.createdAt}</td>
+      <td><button class="del-btn" onclick="deleteApp(${a.id})">삭제</button></td>
+    </tr>`).join('');
+}
+function deleteApp(id) {
+  if(!confirm('삭제하시겠습니까?'))return;
+  sSet('applications',(sGet('applications')||[]).filter(a=>a.id!==id));
+  renderList();
+}
+function downloadCSV() {
+  const apps=sGet('applications')||[];
+  if(!apps.length){alert('데이터가 없습니다.');return;}
+  const header=['No','과정명','교육일','이름','주민번호','연락처','사업자번호','상태','접수일시'];
+  const rows=apps.map((a,i)=>[i+1,a.courseName,a.eduDate,a.name,atob(a.rrnFull||''),a.phone,a.bizNum,a.status==='confirmed'?'접수확정':'접수대기',a.createdAt]);
+  const csv='\uFEFF'+[header,...rows].map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));
+  a.download=`접수목록_${new Date().toISOString().slice(0,10)}.csv`;a.click();
+}
+
+// ─── 교육과정 ───
+function loadCourseAdmin() {
+  const courses=sGet('courseList')||[];
+  const el=document.getElementById('courseList');
+  if(!courses.length){el.innerHTML='<div class="empty">등록된 교육과정이 없습니다.</div>';return;}
+  el.innerHTML=courses.map((c,i)=>`
+    <div class="list-item">
+      <div><span style="font-weight:600;">${c.name}</span> <span style="font-size:12px;color:#666;margin-left:8px;">📅 ${c.date}</span></div>
+      <button class="del-btn" onclick="removeCourse(${i})">삭제</button>
+    </div>`).join('');
+}
+function addCourse() {
+  const name=document.getElementById('newCourseName').value.trim();
+  const date=document.getElementById('newCourseDate').value;
+  if(!name){alert('과정명을 입력해 주세요.');return;}
+  if(!date){alert('교육일을 선택해 주세요.');return;}
+  const courses=sGet('courseList')||[];
+  if(courses.find(c=>c.name===name&&c.date===date)){alert('동일한 과정이 이미 존재합니다.');return;}
+  courses.push({name,date});
+  sSet('courseList',courses);
+  document.getElementById('newCourseName').value='';
+  document.getElementById('newCourseDate').value='';
+  loadCourseAdmin();
+}
+function removeCourse(idx) {
+  if(!confirm('삭제하시겠습니까?'))return;
+  const courses=sGet('courseList')||[];
+  courses.splice(idx,1);
+  sSet('courseList',courses);
+  loadCourseAdmin();
+}
+
+// ─── 지원서 과정 드롭다운 ───
+function loadCourseDropdown() {
+  const courses=sGet('courseList')||[];
+  const sel=document.getElementById('courseName');
+  const notice=document.getElementById('courseEmptyNotice');
+  sel.innerHTML='<option value="">과정을 선택하세요</option>';
+  document.getElementById('eduDate').innerHTML='<option value="">과정을 먼저 선택하세요</option>';
+  document.getElementById('eduDate').disabled=true;
+  if(!courses.length){notice.style.display='block';return;}
+  notice.style.display='none';
+  [...new Set(courses.map(c=>c.name))].forEach(n=>{
+    const o=document.createElement('option');o.value=n;o.textContent=n;sel.appendChild(o);
+  });
+  window._courseData=courses;
+}
+function onCourseChange() {
+  const chosen=document.getElementById('courseName').value;
+  const dateSel=document.getElementById('eduDate');
+  dateSel.innerHTML='<option value="">교육일을 선택하세요</option>';
+  if(!chosen){dateSel.disabled=true;return;}
+  const dates=(window._courseData||[]).filter(c=>c.name===chosen).map(c=>c.date);
+  dates.forEach(d=>{const o=document.createElement('option');o.value=d;o.textContent=d;dateSel.appendChild(o);});
+  dateSel.disabled=false;
+  if(dates.length===1)dateSel.value=dates[0];
+}
+
+// ─── 협약기업 ───
+function loadBizAdmin() {
+  const list=sGet('bizList')||[];
+  const el=document.getElementById('bizList');
+  if(!list.length){el.innerHTML='<div class="empty">등록된 협약기업이 없습니다.</div>';return;}
+  el.innerHTML=list.map((b,i)=>`
+    <div class="list-item">
+      <div><span style="font-weight:600;">${b.name||'(기업명 없음)'}</span><span style="font-family:monospace;margin-left:12px;color:#666;">${b.num}</span></div>
+      <button class="del-btn" onclick="removeBiz(${i})">삭제</button>
+    </div>`).join('');
+}
+function addBiz() {
+  const num=document.getElementById('newBizNum').value.trim();
+  const name=document.getElementById('newBizName').value.trim();
+  if(num.length<12){alert('사업자등록번호를 올바르게 입력해 주세요.');return;}
+  const list=sGet('bizList')||[];
+  if(list.find(b=>b.num===num)){alert('이미 등록된 사업자번호입니다.');return;}
+  list.push({num,name});
+  sSet('bizList',list);
+  document.getElementById('newBizNum').value='';
+  document.getElementById('newBizName').value='';
+  loadBizAdmin();
+}
+function removeBiz(idx) {
+  if(!confirm('삭제하시겠습니까?'))return;
+  const list=sGet('bizList')||[];
+  list.splice(idx,1);
+  sSet('bizList',list);
+  loadBizAdmin();
+}
+async function importBizTxt(input) {
+  const file=input.files[0];if(!file)return;
+  const text=await file.text();
+  const lines=text.split(/\r?\n/).map(l=>l.trim()).filter(Boolean);
+  const list=sGet('bizList')||[];
+  const existing=list.map(b=>b.num);
+  let added=0,skipped=0;
+  for(const line of lines){
+    const sep=line.includes('\t')?'\t':',';
+    const [rawNum,...rest]=line.split(sep);
+    const num=fmtBiz(rawNum.trim());
+    const name=rest.join(sep).trim();
+    if(num.length<12){skipped++;continue;}
+    if(existing.includes(num)){skipped++;continue;}
+    list.push({num,name});existing.push(num);added++;
+  }
+  sSet('bizList',list);
+  input.value='';
+  loadBizAdmin();
+  alert(`✅ 등록 완료\n- 추가: ${added}건\n- 중복/오류 제외: ${skipped}건`);
+}
+function downloadBizSample() {
+  const s='123-45-67890,샘플기업주식회사\n234-56-78901,한국제조(주)\n345-67-89012,스마트테크';
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob(['\uFEFF'+s],{type:'text/plain;charset=utf-8;'}));
+  a.download='협약기업_등록양식.txt';a.click();
+}
+
+// ─── 사업자번호 자동확인 ───
+let bizChecked=false, bizStatusVal='';
+function onBizInput(el) {
+  el.value=fmtBiz(el.value);
+  const digits=el.value.replace(/\D/g,'');
+  const box=document.getElementById('bizStatus');
+  if(digits.length<10){box.style.display='none';bizChecked=false;bizStatusVal='';return;}
+  const num=fmtBiz(digits);
+  const list=sGet('bizList')||[];
+  const found=list.find(b=>b.num===num);
+  box.style.display='block';
+  if(found){
+    box.className='status-box confirmed';
+    box.innerHTML=`<strong>✅ ${found.name||num}</strong>기존 협약기업으로 확인되었습니다. 접수가 자동 확정됩니다.`;
+    bizStatusVal='confirmed';
+  } else {
+    const fi=sGet('_contractFile');
+    const dlHtml=fi?`<a class="download-link" onclick="downloadContract()">📥 협약서 다운로드</a>`:`<span style="font-size:12px;color:#999;">※ 협약서 파일은 담당자에게 문의해 주세요.</span>`;
+    box.className='status-box pending';
+    box.innerHTML=`<strong>⏳ 신규 업체입니다</strong>지원서 제출 후 협약서를 다운받아 작성 후 추가 제출바랍니다.<br>${dlHtml}`;
+    bizStatusVal='pending';
+  }
+  bizChecked=true;
+}
+
+// ─── 개인정보동의 ───
+let privacyAgreed=false;
+function openPrivacyModal() { document.getElementById('privacyCheck').checked=privacyAgreed; document.getElementById('privacyModal').classList.add('open'); }
+function closePrivacyModal() { document.getElementById('privacyModal').classList.remove('open'); }
+function confirmPrivacy() {
+  if(!document.getElementById('privacyCheck').checked){alert('동의 체크박스를 선택해 주세요.');return;}
+  privacyAgreed=true;
+  closePrivacyModal();
+  const st=document.getElementById('privacyStatus');
+  st.textContent='✅ 확인되었습니다.';st.style.color='#2e7d32';st.style.fontWeight='600';
+}
+
+// ─── 제출 ───
+function submitForm() {
+  if(!document.getElementById('confirmCheck').checked){alert('안내 내용을 확인 후 체크해 주세요.');return;}
+  if(!privacyAgreed){alert('개인정보동의서를 확인 후 동의해 주세요.');return;}
+  const vals={courseName:document.getElementById('courseName').value.trim(),eduDate:document.getElementById('eduDate').value,name:document.getElementById('name').value.trim(),rrn:document.getElementById('rrn').value.trim(),phone:document.getElementById('phone').value.trim(),bizNum:document.getElementById('bizNum').value.trim()};
+  const labels={courseName:'과정명',eduDate:'교육일',name:'이름',rrn:'주민등록번호',phone:'연락처',bizNum:'사업자등록번호'};
+  for(const[k,v] of Object.entries(vals)){if(!v){alert(`${labels[k]}을(를) 입력/선택해 주세요.`);return;}}
+  if(!bizChecked){alert('사업자등록번호를 입력해 주세요.');return;}
+  const apps=sGet('applications')||[];
+  const masked=vals.rrn.slice(0,8)+'******';
+  apps.push({id:Date.now(),courseName:vals.courseName,eduDate:vals.eduDate,name:vals.name,rrnMasked:masked,rrnFull:btoa(vals.rrn),phone:vals.phone,bizNum:vals.bizNum,status:bizStatusVal,createdAt:new Date().toLocaleString('ko-KR')});
+  sSet('applications',apps);
+  document.getElementById(bizStatusVal==='confirmed'?'modalConfirmed':'modalPending').classList.add('open');
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+  ['name','rrn','phone','bizNum'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('courseName').value='';
+  document.getElementById('eduDate').innerHTML='<option value="">과정을 먼저 선택하세요</option>';
+  document.getElementById('eduDate').disabled=true;
+  document.getElementById('bizStatus').style.display='none';
+  document.getElementById('confirmCheck').checked=false;
+  privacyAgreed=false;
+  const st=document.getElementById('privacyStatus');
+  st.textContent='동의서를 확인 후 동의해 주세요.';st.style.color='#999';st.style.fontWeight='400';
+  bizChecked=false;bizStatusVal='';
+}
+
+// ─── 협약서 파일 ───
+function handleFileUpload(input) {
+  const file=input.files[0];if(!file)return;
+  if(file.size>4*1024*1024){alert('4MB 이하 파일만 가능합니다.');return;}
+  const reader=new FileReader();
+  reader.onload=e=>{
+    sSet('_contractFile',{name:file.name,size:(file.size/1024).toFixed(1)+'KB',data:e.target.result,uploadedAt:new Date().toLocaleString('ko-KR')});
+    loadFileInfo();
+  };
+  reader.readAsDataURL(file);
+}
+function loadFileInfo() {
+  const info=sGet('_contractFile');
+  const el=document.getElementById('currentFileInfo');
+  el.style.display='block';
+  el.innerHTML=info?`✅ 등록된 파일: <strong>${info.name}</strong> (${info.size}) — ${info.uploadedAt}`:'⚠️ 등록된 협약서 파일이 없습니다.';
+}
+function downloadContract() {
+  const info=sGet('_contractFile');
+  if(!info){alert('등록된 파일이 없습니다.');return;}
+  const a=document.createElement('a');a.href=info.data;a.download=info.name;a.click();
+}
+
+// ─── QR 이미지 ───
+function handleQrUpload(input) {
+  const file=input.files[0];if(!file)return;
+  if(file.size>1*1024*1024){alert('1MB 이하 이미지만 가능합니다.');return;}
+  const reader=new FileReader();
+  reader.onload=e=>{
+    sSet('_qrImage',{data:e.target.result,name:file.name,uploadedAt:new Date().toLocaleString('ko-KR')});
+    loadQrInfo();
+    loadQrDisplay();
+  };
+  reader.readAsDataURL(file);
+}
+function loadQrInfo() {
+  const info=sGet('_qrImage');
+  const el=document.getElementById('currentQrInfo');
+  if(!el)return;
+  el.style.display='block';
+  if(info) el.innerHTML=`✅ 등록된 QR: <strong>${info.name}</strong> — ${info.uploadedAt}<br><img src="${info.data}" style="width:80px;height:80px;margin-top:8px;border-radius:6px;border:1px solid #e2e8f0;">`;
+  else el.innerHTML='⚠️ 등록된 QR 이미지가 없습니다.';
+}
+function loadQrDisplay() {
+  const info=sGet('_qrImage');
+  const wrap=document.getElementById('footerQr');
+  const img=document.getElementById('qrImgDisplay');
+  if(info){img.src=info.data;wrap.style.display='flex';}
+  else wrap.style.display='none';
+}
+
+// 초기 로드
+loadCourseDropdown();
+loadQrDisplay();
+</script>
+</body>
+</html>
