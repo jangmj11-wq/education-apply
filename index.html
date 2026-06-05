@@ -450,7 +450,7 @@ function adminLogin(){
 }
 
 // ─── 관리자 탭 ───
-function adminTab(t,el){
+async function adminTab(t,el){
   document.querySelectorAll('.tab').forEach(e=>e.classList.remove('active'));
   ['list','course','biz','file'].forEach(id=>document.getElementById('tab-'+id).style.display='none');
   document.getElementById('tab-'+t).style.display='block';
@@ -458,7 +458,7 @@ function adminTab(t,el){
   if(t==='list')renderList();
   if(t==='course')loadCourseAdmin();
   if(t==='biz')loadBizAdmin();
-  if(t==='file'){loadFileInfo();loadQrInfo();loadOgInfo();}
+  if(t==='file'){await loadFileInfo();await loadQrInfo();await loadOgInfo();}
 }
 
 // ─── 일정표 (지원서 상단) ───
@@ -758,51 +758,62 @@ function handleFileUpload(input){
   const file=input.files[0];if(!file)return;
   if(file.size>4*1024*1024){alert('4MB 이하 파일만 가능합니다.');return;}
   const reader=new FileReader();
-  reader.onload=e=>{sSet('_contractFile',{name:file.name,size:(file.size/1024).toFixed(1)+'KB',data:e.target.result,uploadedAt:new Date().toLocaleString('ko-KR')});loadFileInfo();};
+  reader.onload=async e=>{
+    await sSet('_contractFile',{name:file.name,size:(file.size/1024).toFixed(1)+'KB',data:e.target.result,uploadedAt:new Date().toLocaleString('ko-KR')});
+    await loadFileInfo();
+  };
   reader.readAsDataURL(file);
 }
-function loadFileInfo(){
-  const info=sGet('_contractFile');const el=document.getElementById('currentFileInfo');
+async function loadFileInfo(){
+  const info=await sGet('_contractFile');const el=document.getElementById('currentFileInfo');
   el.style.display='block';
-  el.innerHTML=info?`✅ 등록된 파일: <strong>${info.name}</strong> (${info.size}) — ${info.uploadedAt}`:'⚠️ 등록된 협약서 파일이 없습니다.';
+  el.innerHTML=info&&info.name?`✅ 등록된 파일: <strong>${info.name}</strong> (${info.size||''}) — ${info.uploadedAt||''}`:'⚠️ 등록된 협약서 파일이 없습니다.';
 }
-function downloadContract(){
-  const info=sGet('_contractFile');if(!info){alert('등록된 파일이 없습니다.');return;}
+async function downloadContract(){
+  const info=await sGet('_contractFile');if(!info){alert('등록된 파일이 없습니다.');return;}
   const a=document.createElement('a');a.href=info.data;a.download=info.name;a.click();
 }
 function handleQrUpload(input){
   const file=input.files[0];if(!file)return;
   if(file.size>1*1024*1024){alert('1MB 이하 이미지만 가능합니다.');return;}
   const reader=new FileReader();
-  reader.onload=e=>{sSet('_qrImage',{data:e.target.result,name:file.name,uploadedAt:new Date().toLocaleString('ko-KR')});loadQrInfo();loadQrDisplay();};
+  reader.onload=async e=>{
+    await sSet('_qrImage',{data:e.target.result,name:file.name,uploadedAt:new Date().toLocaleString('ko-KR')});
+    await loadQrInfo();
+    await loadQrDisplay();
+  };
   reader.readAsDataURL(file);
 }
-function loadQrInfo(){
-  const info=sGet('_qrImage');const el=document.getElementById('currentQrInfo');
+async function loadQrInfo(){
+  const info=await sGet('_qrImage');const el=document.getElementById('currentQrInfo');
   if(!el)return;el.style.display='block';
-  if(info)el.innerHTML=`✅ 등록된 QR: <strong>${info.name}</strong> — ${info.uploadedAt}<br><img src="${info.data}" style="width:80px;height:80px;margin-top:8px;border-radius:6px;border:1px solid #e2e8f0;">`;
+  if(info&&info.data)el.innerHTML=`✅ 등록된 QR: <strong>${info.name||''}</strong> — ${info.uploadedAt||''}<br><img src="${info.data}" style="width:80px;height:80px;margin-top:8px;border-radius:6px;border:1px solid #e2e8f0;">`;
   else el.innerHTML='⚠️ 등록된 QR 이미지가 없습니다.';
 }
-function loadQrDisplay(){
-  const info=sGet('_qrImage');const wrap=document.getElementById('footerQr');const img=document.getElementById('qrImgDisplay');
-  if(info){img.src=info.data;wrap.style.display='flex';}else wrap.style.display='none';
+async function loadQrDisplay(){
+  const info=await sGet('_qrImage');const wrap=document.getElementById('footerQr');const img=document.getElementById('qrImgDisplay');
+  if(info&&info.data){img.src=info.data;wrap.style.display='flex';}else wrap.style.display='none';
 }
 function handleOgUpload(input){
   const file=input.files[0];if(!file)return;
   if(file.size>1*1024*1024){alert('1MB 이하 이미지만 가능합니다.');return;}
   const reader=new FileReader();
-  reader.onload=e=>{sSet('_ogImage',{data:e.target.result,name:file.name,uploadedAt:new Date().toLocaleString('ko-KR')});loadOgInfo();applyOgMeta();};
+  reader.onload=async e=>{
+    await sSet('_ogImage',{data:e.target.result,name:file.name,uploadedAt:new Date().toLocaleString('ko-KR')});
+    await loadOgInfo();
+    applyOgMeta();
+  };
   reader.readAsDataURL(file);
 }
-function loadOgInfo(){
-  const info=sGet('_ogImage');const el=document.getElementById('currentOgInfo');
+async function loadOgInfo(){
+  const info=await sGet('_ogImage');const el=document.getElementById('currentOgInfo');
   if(!el)return;el.style.display='block';
-  if(info)el.innerHTML=`✅ 등록된 썸네일: <strong>${info.name}</strong> — ${info.uploadedAt}<br><img src="${info.data}" style="max-width:200px;margin-top:8px;border-radius:6px;border:1px solid #e2e8f0;">`;
+  if(info&&info.data)el.innerHTML=`✅ 등록된 썸네일: <strong>${info.name||''}</strong> — ${info.uploadedAt||''}<br><img src="${info.data}" style="max-width:200px;margin-top:8px;border-radius:6px;border:1px solid #e2e8f0;">`;
   else el.innerHTML='⚠️ 등록된 썸네일 이미지가 없습니다.';
 }
-function applyOgMeta(){
-  const info=sGet('_ogImage');
-  if(info){document.getElementById('ogMetaImage').setAttribute('content',info.data);document.getElementById('twitterMetaImage').setAttribute('content',info.data);}
+async function applyOgMeta(){
+  const info=await sGet('_ogImage');
+  if(info&&info.data){document.getElementById('ogMetaImage').setAttribute('content',info.data);document.getElementById('twitterMetaImage').setAttribute('content',info.data);}
 }
 
 // 초기 로드 (firebaseReady 이벤트 후 실행)
