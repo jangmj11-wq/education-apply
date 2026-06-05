@@ -3,110 +3,142 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta property="og:title" content="제주관광대학교 공동훈련센터 교육과정 지원서">
+<meta property="og:description" content="제주관광대학교 공동훈련센터 교육과정 지원서 접수 시스템입니다.">
+<meta property="og:image" id="ogMetaImage" content="">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" id="twitterMetaImage" content="">
 <title>교육생 지원서</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Malgun Gothic', sans-serif; background: #f0f4f8; min-height: 100vh; }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Malgun Gothic',sans-serif;background:#f0f4f8;min-height:100vh;}
+  .header{background:#1a4fa0;color:white;padding:16px 24px;display:flex;justify-content:space-between;align-items:center;}
+  .header h1{font-size:15px;font-weight:700;}
+  .nav-btn{background:rgba(255,255,255,0.2);color:white;border:1px solid rgba(255,255,255,0.4);padding:6px 14px;border-radius:6px;cursor:pointer;font-size:13px;}
+  .nav-btn:hover{background:white;color:#1a4fa0;}
+  .page{display:none;} .page.active{display:block;}
+  .apply-wrap{max-width:720px;margin:32px auto;padding:0 16px 40px;}
+  .card{background:white;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,0.08);padding:28px;margin-bottom:20px;}
+  .card h2{font-size:16px;color:#1a4fa0;margin-bottom:20px;padding-bottom:10px;border-bottom:2px solid #e8f0fe;}
+  .form-group{margin-bottom:16px;}
+  .form-group label{display:block;font-size:13px;font-weight:600;color:#444;margin-bottom:6px;}
+  .req{color:#e53e3e;margin-left:2px;}
+  .form-group input,.form-group select{width:100%;padding:10px 12px;border:1.5px solid #d1d5db;border-radius:8px;font-size:14px;background:white;}
+  .form-group input:focus,.form-group select:focus{outline:none;border-color:#1a4fa0;}
+  .form-group select:disabled{background:#f3f4f6;color:#999;}
+  .notice{background:#e8f0fe;border-radius:8px;padding:12px 16px;font-size:13px;color:#1a4fa0;margin-bottom:20px;line-height:1.6;}
+  .status-box{margin-top:10px;padding:14px 16px;border-radius:8px;font-size:14px;display:none;}
+  .status-box.confirmed{background:#e6f4ea;border:1px solid #4caf50;color:#2e7d32;}
+  .status-box.pending{background:#fff8e1;border:1px solid #ffc107;color:#856404;}
+  .status-box strong{display:block;margin-bottom:4px;font-size:15px;}
+  .download-link{display:inline-flex;align-items:center;gap:6px;margin-top:10px;background:#fff3cd;border:1px solid #ffc107;color:#856404;padding:7px 14px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600;}
+  .submit-btn{width:100%;padding:14px;background:#1a4fa0;color:white;border:none;border-radius:10px;font-size:16px;font-weight:700;cursor:pointer;margin-top:8px;}
+  .submit-btn:hover{background:#154188;}
+  .course-empty-notice{background:#fff8e1;border:1px solid #ffc107;border-radius:8px;padding:12px 16px;font-size:13px;color:#856404;margin-bottom:16px;display:none;}
 
-  .header { background: #1a4fa0; color: white; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; }
-  .header h1 { font-size: 16px; font-weight: 700; }
-  .nav-btns { display: flex; gap: 8px; }
-  .nav-btn { background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.4); padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; }
-  .nav-btn:hover { background: white; color: #1a4fa0; }
+  /* 일정표 */
+  .schedule-wrap{background:white;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,0.08);padding:20px 24px;margin-bottom:20px;}
+  .schedule-title{font-size:13px;font-weight:600;color:#888;margin-bottom:14px;letter-spacing:0.03em;}
+  .schedule-hint{font-size:11px;color:#aaa;font-weight:400;margin-left:6px;}
+  .srow{display:flex;align-items:center;gap:12px;padding:9px 12px;border:0.5px solid #e2e8f0;border-radius:10px;margin-bottom:8px;flex-wrap:wrap;background:#fafbff;position:relative;}
+  .clabel{display:flex;align-items:center;gap:8px;min-width:180px;flex-shrink:0;position:relative;}
+  .cdot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+  .cname{font-size:13px;font-weight:600;color:#1a4fa0;cursor:pointer;border-bottom:1px dashed #7aa0d4;padding-bottom:1px;white-space:nowrap;}
+  .cname:hover{color:#0d3a7a;}
+  .sdivider{width:0.5px;height:26px;background:#d1d5db;flex-shrink:0;}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;}
+  .chip{font-size:12px;padding:3px 10px;border-radius:20px;border:0.5px solid;white-space:nowrap;}
 
-  /* 페이지 전환 */
-  .page { display: none; }
-  .page.active { display: block; }
-
-  /* 지원서 */
-  .apply-wrap { max-width: 720px; margin: 32px auto; padding: 0 16px 40px; }
-  .card { background: white; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); padding: 28px; margin-bottom: 20px; }
-  .card h2 { font-size: 16px; color: #1a4fa0; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #e8f0fe; }
-  .form-group { margin-bottom: 16px; }
-  .form-group label { display: block; font-size: 13px; font-weight: 600; color: #444; margin-bottom: 6px; }
-  .req { color: #e53e3e; margin-left: 2px; }
-  .form-group input, .form-group select { width: 100%; padding: 10px 12px; border: 1.5px solid #d1d5db; border-radius: 8px; font-size: 14px; background: white; }
-  .form-group input:focus, .form-group select:focus { outline: none; border-color: #1a4fa0; }
-  .form-group select:disabled { background: #f3f4f6; color: #999; }
-  .notice { background: #e8f0fe; border-radius: 8px; padding: 12px 16px; font-size: 13px; color: #1a4fa0; margin-bottom: 20px; line-height: 1.6; }
-  .status-box { margin-top: 10px; padding: 14px 16px; border-radius: 8px; font-size: 14px; display: none; }
-  .status-box.confirmed { background: #e6f4ea; border: 1px solid #4caf50; color: #2e7d32; }
-  .status-box.pending { background: #fff8e1; border: 1px solid #ffc107; color: #856404; }
-  .status-box strong { display: block; margin-bottom: 4px; font-size: 15px; }
-  .download-link { display: inline-flex; align-items: center; gap: 6px; margin-top: 10px; background: #fff3cd; border: 1px solid #ffc107; color: #856404; padding: 7px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; }
-  .submit-btn { width: 100%; padding: 14px; background: #1a4fa0; color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 8px; }
-  .submit-btn:hover { background: #154188; }
-  .course-empty-notice { background: #fff8e1; border: 1px solid #ffc107; border-radius: 8px; padding: 12px 16px; font-size: 13px; color: #856404; margin-bottom: 16px; display: none; }
+  /* 호버 팝업 */
+  .hover-popup{display:none;position:absolute;left:0;top:calc(100% + 8px);z-index:99;width:260px;background:white;border:0.5px solid #d1d5db;border-radius:12px;box-shadow:0 6px 24px rgba(0,0,0,0.13);overflow:hidden;}
+  .clabel:hover .hover-popup{display:block;}
+  .popup-img-wrap{background:#f0f4f8;min-height:160px;display:flex;align-items:center;justify-content:center;}
+  .popup-img-wrap img{width:100%;display:block;}
+  .popup-noimg{font-size:12px;color:#aaa;text-align:center;padding:40px 16px;}
+  .popup-footer-bar{padding:10px 14px;background:#f8faff;border-top:0.5px solid #e2e8f0;font-size:12px;color:#1a4fa0;font-weight:600;}
 
   /* 푸터 */
-  .footer-info { margin-top: 28px; padding: 20px; background: white; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
-  .footer-qr { display: flex; flex-direction: column; align-items: center; gap: 4px; }
-  .footer-qr img { width: 90px; height: 90px; border-radius: 6px; border: 1px solid #e2e8f0; }
-  .footer-qr span { font-size: 11px; color: #888; }
+  .footer-info{margin-top:28px;padding:20px;background:white;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,0.08);display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+  .footer-qr{display:flex;flex-direction:column;align-items:center;gap:4px;}
+  .footer-qr img{width:90px;height:90px;border-radius:6px;border:1px solid #e2e8f0;}
+  .footer-qr span{font-size:11px;color:#888;}
 
-  /* 관리자 오버레이 */
-  .admin-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; align-items: center; justify-content: center; }
-  .admin-overlay.open { display: flex; }
-  .admin-box { background: white; border-radius: 14px; padding: 32px; max-width: 360px; width: 90%; }
-  .admin-box h2 { font-size: 17px; color: #1a4fa0; margin-bottom: 20px; }
-  .admin-close { float: right; background: none; border: none; font-size: 20px; cursor: pointer; color: #888; margin-top: -4px; }
+  /* 관리자 오버레이 로그인 */
+  .admin-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;align-items:center;justify-content:center;}
+  .admin-overlay.open{display:flex;}
+  .admin-box{background:white;border-radius:14px;padding:32px;max-width:360px;width:90%;}
+  .admin-box h2{font-size:17px;color:#1a4fa0;margin-bottom:20px;}
+  .admin-close{float:right;background:none;border:none;font-size:20px;cursor:pointer;color:#888;margin-top:-4px;}
 
   /* 관리자 메인 */
-  .admin-wrap { max-width: 980px; margin: 32px auto; padding: 0 16px 40px; }
-  .tab-bar { display: flex; margin-bottom: 20px; border-bottom: 2px solid #e2e8f0; overflow-x: auto; }
-  .tab { padding: 10px 18px; cursor: pointer; font-size: 14px; font-weight: 600; color: #888; border-bottom: 3px solid transparent; margin-bottom: -2px; white-space: nowrap; }
-  .tab.active { color: #1a4fa0; border-bottom-color: #1a4fa0; }
-  .table-wrap { overflow-x: auto; }
-  table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  th { background: #1a4fa0; color: white; padding: 10px 12px; text-align: left; white-space: nowrap; }
-  td { padding: 9px 12px; border-bottom: 1px solid #e2e8f0; }
-  tr:hover td { background: #f8faff; }
-  .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
-  .badge.confirmed { background: #e6f4ea; color: #2e7d32; }
-  .badge.pending { background: #fff8e1; color: #856404; }
-  .action-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 8px; }
-  .dl-btn { padding: 8px 16px; background: #28a745; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; }
-  .del-btn { padding: 3px 10px; background: #fee2e2; color: #c0392b; border: 1px solid #fca5a5; border-radius: 4px; cursor: pointer; font-size: 12px; }
-  .filter-row { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
-  .filter-row select, .filter-row input { padding: 7px 10px; border: 1.5px solid #d1d5db; border-radius: 6px; font-size: 13px; }
-  .count-badge { background: #e8f0fe; color: #1a4fa0; border-radius: 20px; padding: 2px 10px; font-size: 13px; font-weight: 600; }
-  .add-row { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
-  .add-row input { flex: 1; min-width: 140px; padding: 10px 12px; border: 1.5px solid #d1d5db; border-radius: 8px; font-size: 14px; }
-  .add-btn { padding: 10px 16px; background: #1a4fa0; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; white-space: nowrap; }
-  .list-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: #f8faff; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 8px; flex-wrap: wrap; gap: 6px; }
-  .file-upload-area { border: 2px dashed #c7d7f0; border-radius: 10px; padding: 24px; text-align: center; cursor: pointer; margin-bottom: 12px; }
-  .file-upload-area:hover { border-color: #1a4fa0; background: #f0f4f8; }
-  .file-upload-area input { display: none; }
-  .current-file { font-size: 13px; color: #555; background: #f0f4f8; padding: 8px 12px; border-radius: 6px; margin-bottom: 12px; }
-  .empty { text-align: center; color: #999; padding: 30px; font-size: 14px; }
-  .loading { text-align: center; color: #888; padding: 20px; font-size: 14px; }
+  .admin-wrap{max-width:980px;margin:32px auto;padding:0 16px 40px;}
+  .tab-bar{display:flex;margin-bottom:20px;border-bottom:2px solid #e2e8f0;overflow-x:auto;}
+  .tab{padding:10px 18px;cursor:pointer;font-size:14px;font-weight:600;color:#888;border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap;}
+  .tab.active{color:#1a4fa0;border-bottom-color:#1a4fa0;}
+  .table-wrap{overflow-x:auto;}
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  th{background:#1a4fa0;color:white;padding:10px 12px;text-align:left;white-space:nowrap;}
+  td{padding:9px 12px;border-bottom:1px solid #e2e8f0;}
+  tr:hover td{background:#f8faff;}
+  .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;}
+  .badge.confirmed{background:#e6f4ea;color:#2e7d32;}
+  .badge.pending{background:#fff8e1;color:#856404;}
+  .action-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px;}
+  .dl-btn{padding:8px 16px;background:#28a745;color:white;border:none;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600;}
+  .del-btn{padding:3px 10px;background:#fee2e2;color:#c0392b;border:1px solid #fca5a5;border-radius:4px;cursor:pointer;font-size:12px;}
+  .filter-row{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
+  .filter-row select,.filter-row input{padding:7px 10px;border:1.5px solid #d1d5db;border-radius:6px;font-size:13px;}
+  .count-badge{background:#e8f0fe;color:#1a4fa0;border-radius:20px;padding:2px 10px;font-size:13px;font-weight:600;}
+  .add-row{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
+  .add-row input{flex:1;min-width:140px;padding:10px 12px;border:1.5px solid #d1d5db;border-radius:8px;font-size:14px;}
+  .add-btn{padding:10px 16px;background:#1a4fa0;color:white;border:none;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;white-space:nowrap;}
+  .list-item{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#f8faff;border:1px solid #e2e8f0;border-radius:8px;margin-bottom:8px;flex-wrap:wrap;gap:6px;}
+  .file-upload-area{border:2px dashed #c7d7f0;border-radius:10px;padding:24px;text-align:center;cursor:pointer;margin-bottom:12px;}
+  .file-upload-area:hover{border-color:#1a4fa0;background:#f0f4f8;}
+  .file-upload-area input{display:none;}
+  .current-file{font-size:13px;color:#555;background:#f0f4f8;padding:8px 12px;border-radius:6px;margin-bottom:12px;}
+  .empty{text-align:center;color:#999;padding:30px;font-size:14px;}
 
   /* 모달 */
-  .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; align-items: center; justify-content: center; }
-  .modal-bg.open { display: flex; }
-  .modal { background: white; border-radius: 14px; padding: 28px; max-width: 400px; width: 90%; text-align: center; }
-  .modal h3 { font-size: 18px; margin-bottom: 10px; }
-  .modal p { font-size: 14px; color: #555; margin-bottom: 20px; line-height: 1.6; white-space: pre-line; }
-  .modal-btn { padding: 10px 28px; background: #1a4fa0; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 15px; font-weight: 700; }
-  .dl-box { background: #FAEEDA; border: 1.5px solid #EF9F27; border-radius: 10px; padding: 16px; margin-bottom: 20px; }
-  .dl-box p { font-size: 13px; color: #633806; margin: 0 0 12px; line-height: 1.6; }
-  .dl-modal-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 12px; background: #BA7517; color: #FAEEDA; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; }
-  .confirm-only-btn { display: block; width: 100%; padding: 11px; border: 0.5px solid #d1d5db; background: transparent; border-radius: 8px; font-size: 14px; color: #666; cursor: pointer; }
+  .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:100;align-items:center;justify-content:center;}
+  .modal-bg.open{display:flex;}
+  .modal{background:white;border-radius:14px;padding:28px;max-width:400px;width:90%;text-align:center;}
+  .modal h3{font-size:18px;margin-bottom:10px;}
+  .modal p{font-size:14px;color:#555;margin-bottom:20px;line-height:1.6;white-space:pre-line;}
+  .modal-btn{padding:10px 28px;background:#1a4fa0;color:white;border:none;border-radius:8px;cursor:pointer;font-size:15px;font-weight:700;}
+  .dl-box{background:#FAEEDA;border:1.5px solid #EF9F27;border-radius:10px;padding:16px;margin-bottom:20px;}
+  .dl-box p{font-size:13px;color:#633806;margin:0 0 12px;line-height:1.6;}
+  .dl-modal-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:12px;background:#BA7517;color:#FAEEDA;border:none;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;}
+  .confirm-only-btn{display:block;width:100%;padding:11px;border:0.5px solid #d1d5db;background:transparent;border-radius:8px;font-size:14px;color:#666;cursor:pointer;}
+
+  /* 과정 이미지 업로드 */
+  .course-img-row{display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap;}
+  .course-img-thumb{width:48px;height:48px;border-radius:6px;border:1px solid #e2e8f0;object-fit:cover;}
+  .img-upload-btn{padding:5px 12px;background:#e8f0fe;color:#1a4fa0;border:1px solid #7aa0d4;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;}
+  .img-del-btn{padding:5px 10px;background:#fee2e2;color:#c0392b;border:1px solid #fca5a5;border-radius:6px;cursor:pointer;font-size:12px;}
 </style>
 </head>
 <body>
 
 <div class="header">
   <h1>제주관광대학교 공동훈련센터 교육과정 지원서 접수 시스템</h1>
-  <div class="nav-btns">
+  <div>
     <button class="nav-btn" onclick="showPage('apply')">지원서 작성</button>
-    <button class="nav-btn" onclick="openAdminLogin()">관리자</button>
+    <button class="nav-btn" style="margin-left:6px;" onclick="openAdminLogin()">관리자</button>
   </div>
 </div>
 
-<!-- ===== 지원서 페이지 ===== -->
+<!-- 지원서 페이지 -->
 <div id="page-apply" class="page active">
   <div class="apply-wrap">
+
+    <!-- 일정표 -->
+    <div class="schedule-wrap">
+      <div class="schedule-title">교육 일정 안내 <span class="schedule-hint">※ 과정명에 마우스를 올리면 상세 정보를 확인할 수 있습니다</span></div>
+      <div id="scheduleList"><div style="font-size:13px;color:#aaa;padding:8px 0;">등록된 교육과정이 없습니다.</div></div>
+    </div>
+
     <div class="notice">✅ 아래 양식을 작성해 주세요. <strong>주민등록번호는 암호화</strong>되어 안전하게 저장됩니다.</div>
 
     <div class="card">
@@ -165,7 +197,7 @@
     <button class="submit-btn" onclick="submitForm()">지원서 제출하기</button>
 
     <div class="footer-info">
-      <img src="https://jtc.jtu.ac.kr/wp-content/uploads/2021/03/logo.png" alt="제주관광대학교 로고" style="height:56px;object-fit:contain;" onerror="this.style.display='none'">
+      <img src="https://jtc.jtu.ac.kr/wp-content/uploads/2021/03/logo.png" alt="로고" style="height:56px;object-fit:contain;" onerror="this.style.display='none'">
       <div style="flex:1;min-width:200px;">
         <div style="font-size:15px;font-weight:700;color:#1a4fa0;margin-bottom:6px;">제주관광대학교 공동훈련센터</div>
         <div style="font-size:13px;color:#555;line-height:1.9;">
@@ -181,7 +213,7 @@
   </div>
 </div>
 
-<!-- ===== 관리자 페이지 ===== -->
+<!-- 관리자 페이지 -->
 <div id="page-admin" class="page">
   <div class="admin-wrap">
     <div class="tab-bar">
@@ -275,11 +307,22 @@
         </div>
         <div id="currentQrInfo" class="current-file" style="display:none;"></div>
       </div>
+      <div class="card">
+        <h2>🖼️ URL 공유 썸네일 이미지</h2>
+        <p style="font-size:13px;color:#666;margin-bottom:16px;">카카오톡·SNS 공유 시 미리보기로 표시될 이미지를 등록해 주세요.</p>
+        <div class="file-upload-area" onclick="document.getElementById('ogFile').click()">
+          <input type="file" id="ogFile" accept=".jpg,.jpeg,.png" onchange="handleOgUpload(this)">
+          <div style="font-size:32px;margin-bottom:8px;">🖼️</div>
+          <div style="font-size:14px;font-weight:600;color:#1a4fa0;">클릭하여 썸네일 이미지 선택</div>
+          <div style="font-size:12px;color:#888;margin-top:4px;">JPG, PNG 권장 1200×630 (최대 1MB)</div>
+        </div>
+        <div id="currentOgInfo" class="current-file" style="display:none;"></div>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- ===== 관리자 로그인 오버레이 ===== -->
+<!-- 관리자 로그인 오버레이 -->
 <div class="admin-overlay" id="adminLoginOverlay">
   <div class="admin-box">
     <button class="admin-close" onclick="closeAdminLogin()">✕</button>
@@ -344,104 +387,135 @@
 </div>
 
 <script>
-// ─── Storage (localStorage) ───
-function sGet(k) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : null; } catch { return null; } }
-function sSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e) { console.error(e); } }
+// ─── Storage ───
+function sGet(k){try{const v=localStorage.getItem(k);return v?JSON.parse(v):null;}catch{return null;}}
+function sSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){console.error(e);}}
+
+// ─── 색상 팔레트 ───
+const COLORS=[
+  {dot:'#185FA5',chipBg:'#E6F1FB',chipColor:'#0C447C',chipBorder:'#B5D4F4'},
+  {dot:'#0F6E56',chipBg:'#E1F5EE',chipColor:'#085041',chipBorder:'#9FE1CB'},
+  {dot:'#BA7517',chipBg:'#FAEEDA',chipColor:'#633806',chipBorder:'#FAC775'},
+  {dot:'#534AB7',chipBg:'#EEEDFE',chipColor:'#3C3489',chipBorder:'#CECBF6'},
+  {dot:'#993556',chipBg:'#FBEAF0',chipColor:'#72243E',chipBorder:'#F4C0D1'},
+  {dot:'#5F5E5A',chipBg:'#F1EFE8',chipColor:'#444441',chipBorder:'#D3D1C7'},
+];
 
 // ─── 포맷 ───
-function formatRrn(el) { let v=el.value.replace(/\D/g,''); if(v.length>6) v=v.slice(0,6)+'-'+v.slice(6,13); el.value=v; }
-function formatPhone(el) { let v=el.value.replace(/\D/g,''); if(v.length>3&&v.length<=7) v=v.slice(0,3)+'-'+v.slice(3); else if(v.length>7) v=v.slice(0,3)+'-'+v.slice(3,7)+'-'+v.slice(7,11); el.value=v; }
-function formatBizInput(el) { el.value=fmtBiz(el.value); }
-function fmtBiz(val) { let v=val.replace(/\D/g,''); if(v.length>3&&v.length<=5) v=v.slice(0,3)+'-'+v.slice(3); else if(v.length>5) v=v.slice(0,3)+'-'+v.slice(3,5)+'-'+v.slice(5,10); return v; }
+function formatRrn(el){let v=el.value.replace(/\D/g,'');if(v.length>6)v=v.slice(0,6)+'-'+v.slice(6,13);el.value=v;}
+function formatPhone(el){let v=el.value.replace(/\D/g,'');if(v.length>3&&v.length<=7)v=v.slice(0,3)+'-'+v.slice(3);else if(v.length>7)v=v.slice(0,3)+'-'+v.slice(3,7)+'-'+v.slice(7,11);el.value=v;}
+function formatBizInput(el){el.value=fmtBiz(el.value);}
+function fmtBiz(val){let v=val.replace(/\D/g,'');if(v.length>3&&v.length<=5)v=v.slice(0,3)+'-'+v.slice(3);else if(v.length>5)v=v.slice(0,3)+'-'+v.slice(3,5)+'-'+v.slice(5,10);return v;}
 
 // ─── 페이지 ───
-function showPage(name) {
+function showPage(name){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('page-'+name).classList.add('active');
-  if(name==='apply') { loadCourseDropdown(); loadQrDisplay(); }
+  if(name==='apply'){loadCourseDropdown();loadSchedule();loadQrDisplay();}
 }
 
-// ─── 관리자 로그인 오버레이 ───
-function openAdminLogin() {
-  if(sessionStorage.getItem('adminAuth')==='ok') { showPage('admin'); renderList(); loadCourseAdmin(); loadBizAdmin(); return; }
+// ─── 관리자 로그인 ───
+function openAdminLogin(){
+  if(sessionStorage.getItem('adminAuth')==='ok'){showPage('admin');renderList();loadCourseAdmin();loadBizAdmin();return;}
   document.getElementById('adminPw').value='';
   document.getElementById('adminLoginOverlay').classList.add('open');
 }
-function closeAdminLogin() { document.getElementById('adminLoginOverlay').classList.remove('open'); }
-function adminLogin() {
-  const pw = document.getElementById('adminPw').value;
-  if(pw==='5862') {
-    sessionStorage.setItem('adminAuth','ok');
-    closeAdminLogin();
-    showPage('admin');
-    renderList(); loadCourseAdmin(); loadBizAdmin();
-  } else { alert('비밀번호가 틀렸습니다.'); }
+function closeAdminLogin(){document.getElementById('adminLoginOverlay').classList.remove('open');}
+function adminLogin(){
+  const pw=document.getElementById('adminPw').value;
+  if(pw==='5862'){sessionStorage.setItem('adminAuth','ok');closeAdminLogin();showPage('admin');renderList();loadCourseAdmin();loadBizAdmin();}
+  else alert('비밀번호가 틀렸습니다.');
 }
 
 // ─── 관리자 탭 ───
-function adminTab(t, el) {
+function adminTab(t,el){
   document.querySelectorAll('.tab').forEach(e=>e.classList.remove('active'));
   ['list','course','biz','file'].forEach(id=>document.getElementById('tab-'+id).style.display='none');
   document.getElementById('tab-'+t).style.display='block';
   el.classList.add('active');
-  if(t==='list') renderList();
-  if(t==='course') loadCourseAdmin();
-  if(t==='biz') loadBizAdmin();
-  if(t==='file') { loadFileInfo(); loadQrInfo(); }
+  if(t==='list')renderList();
+  if(t==='course')loadCourseAdmin();
+  if(t==='biz')loadBizAdmin();
+  if(t==='file'){loadFileInfo();loadQrInfo();loadOgInfo();}
 }
 
-// ─── 접수 목록 ───
-function renderList() {
-  const apps = sGet('applications') || [];
-  const status = document.getElementById('filterStatus')?.value||'';
-  const name = document.getElementById('filterName')?.value||'';
-  const biz = document.getElementById('filterBiz')?.value||'';
-  const filtered = apps.filter(a=>(!status||a.status===status)&&(!name||a.name.includes(name))&&(!biz||a.bizNum.includes(biz)));
-  document.getElementById('totalCount').textContent=filtered.length+'건';
-  const body=document.getElementById('appListBody');
-  if(!filtered.length){body.innerHTML='<tr><td colspan="10" class="empty">접수된 지원서가 없습니다.</td></tr>';return;}
-  body.innerHTML=filtered.map((a,i)=>`
-    <tr>
-      <td>${i+1}</td>
-      <td style="max-width:120px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${a.courseName}</td>
-      <td style="white-space:nowrap;">${a.eduDate}</td>
-      <td>${a.name}</td>
-      <td style="font-family:monospace;">${a.rrnMasked}</td>
-      <td>${a.phone}</td>
-      <td style="font-family:monospace;">${a.bizNum}</td>
-      <td><span class="badge ${a.status}">${a.status==='confirmed'?'접수확정':'접수대기'}</span></td>
-      <td style="white-space:nowrap;">${a.createdAt}</td>
-      <td><button class="del-btn" onclick="deleteApp(${a.id})">삭제</button></td>
-    </tr>`).join('');
-}
-function deleteApp(id) {
-  if(!confirm('삭제하시겠습니까?'))return;
-  sSet('applications',(sGet('applications')||[]).filter(a=>a.id!==id));
-  renderList();
-}
-function downloadCSV() {
-  const apps=sGet('applications')||[];
-  if(!apps.length){alert('데이터가 없습니다.');return;}
-  const header=['No','과정명','교육일','이름','주민번호','연락처','사업자번호','상태','접수일시'];
-  const rows=apps.map((a,i)=>[i+1,a.courseName,a.eduDate,a.name,atob(a.rrnFull||''),a.phone,a.bizNum,a.status==='confirmed'?'접수확정':'접수대기',a.createdAt]);
-  const csv='\uFEFF'+[header,...rows].map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));
-  a.download=`접수목록_${new Date().toISOString().slice(0,10)}.csv`;a.click();
-}
-
-// ─── 교육과정 ───
-function loadCourseAdmin() {
+// ─── 일정표 (지원서 상단) ───
+function loadSchedule(){
   const courses=sGet('courseList')||[];
+  const el=document.getElementById('scheduleList');
+  if(!courses.length){el.innerHTML='<div style="font-size:13px;color:#aaa;padding:8px 0;">등록된 교육과정이 없습니다.</div>';return;}
+  // 과정명별 그룹핑
+  const groups={};
+  courses.forEach(c=>{if(!groups[c.name])groups[c.name]=[];groups[c.name].push(c.date);});
+  const names=Object.keys(groups);
+  const imgs=sGet('_courseImages')||{};
+  el.innerHTML=names.map((name,i)=>{
+    const col=COLORS[i%COLORS.length];
+    const dates=groups[name];
+    const chips=dates.map(d=>`<span style="font-size:12px;padding:3px 10px;border-radius:20px;border:0.5px solid ${col.chipBorder};background:${col.chipBg};color:${col.chipColor};white-space:nowrap;">${d}</span>`).join('');
+    const imgData=imgs[name];
+    const popupContent=imgData
+      ?`<img src="${imgData}" style="width:100%;display:block;" alt="과정 상세">`
+      :`<div style="padding:32px 16px;text-align:center;font-size:12px;color:#aaa;">등록된 이미지가 없습니다.</div>`;
+    return `
+      <div style="display:flex;align-items:center;gap:12px;padding:9px 12px;border:0.5px solid #e2e8f0;border-radius:10px;margin-bottom:8px;flex-wrap:wrap;background:#fafbff;position:relative;">
+        <div style="display:flex;align-items:center;gap:8px;min-width:180px;flex-shrink:0;position:relative;" class="clabel-wrap">
+          <div style="width:9px;height:9px;border-radius:50%;background:${col.dot};flex-shrink:0;"></div>
+          <span style="font-size:13px;font-weight:600;color:#1a4fa0;cursor:pointer;border-bottom:1px dashed #7aa0d4;padding-bottom:1px;" class="cname-hover">${name}</span>
+          <div class="hover-popup" style="display:none;position:absolute;left:0;top:calc(100% + 8px);z-index:99;width:260px;background:white;border:0.5px solid #d1d5db;border-radius:12px;box-shadow:0 6px 24px rgba(0,0,0,0.13);overflow:hidden;">
+            ${popupContent}
+            <div style="padding:10px 14px;background:#f8faff;border-top:0.5px solid #e2e8f0;font-size:12px;color:#1a4fa0;font-weight:600;">${name}</div>
+          </div>
+        </div>
+        <div style="width:0.5px;height:26px;background:#d1d5db;flex-shrink:0;"></div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;">${chips}</div>
+      </div>`;
+  }).join('');
+
+  // 호버 이벤트
+  el.querySelectorAll('.clabel-wrap').forEach(wrap=>{
+    const popup=wrap.querySelector('.hover-popup');
+    wrap.addEventListener('mouseenter',()=>popup.style.display='block');
+    wrap.addEventListener('mouseleave',()=>popup.style.display='none');
+  });
+}
+
+// ─── 교육과정 관리 (관리자) ───
+function loadCourseAdmin(){
+  const courses=sGet('courseList')||[];
+  const imgs=sGet('_courseImages')||{};
   const el=document.getElementById('courseList');
   if(!courses.length){el.innerHTML='<div class="empty">등록된 교육과정이 없습니다.</div>';return;}
-  el.innerHTML=courses.map((c,i)=>`
-    <div class="list-item">
-      <div><span style="font-weight:600;">${c.name}</span> <span style="font-size:12px;color:#666;margin-left:8px;">📅 ${c.date}</span></div>
-      <button class="del-btn" onclick="removeCourse(${i})">삭제</button>
-    </div>`).join('');
+  // 과정명별 그룹
+  const groups={};const order=[];
+  courses.forEach((c,i)=>{if(!groups[c.name]){groups[c.name]=[];order.push(c.name);}groups[c.name].push({date:c.date,idx:i});});
+  el.innerHTML=order.map(name=>{
+    const dates=groups[name];
+    const imgData=imgs[name];
+    const thumbHtml=imgData?`<img class="course-img-thumb" src="${imgData}" alt="썸네일">`:'';
+    const dateItems=dates.map(({date,idx})=>`
+      <span style="font-size:12px;background:#e8f0fe;color:#1a4fa0;padding:3px 10px;border-radius:20px;border:0.5px solid #b5d4f4;">${date}</span>
+      <button class="del-btn" onclick="removeCourse(${idx})" style="margin-left:4px;">삭제</button>
+    `).join(' ');
+    return `
+      <div class="list-item" style="flex-direction:column;align-items:flex-start;">
+        <div style="display:flex;align-items:center;justify-content:space-between;width:100%;flex-wrap:wrap;gap:8px;">
+          <span style="font-weight:600;font-size:14px;">${name}</span>
+          <div class="course-img-row">
+            ${thumbHtml}
+            <label class="img-upload-btn">
+              📷 상세이미지 업로드
+              <input type="file" accept=".jpg,.jpeg,.png" style="display:none;" onchange="uploadCourseImg('${name.replace(/'/g,"\\'")}',this)">
+            </label>
+            ${imgData?`<button class="img-del-btn" onclick="deleteCourseImg('${name.replace(/'/g,"\\'")}')">삭제</button>`:''}
+          </div>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;">${dateItems}</div>
+      </div>`;
+  }).join('');
 }
-function addCourse() {
+
+function addCourse(){
   const name=document.getElementById('newCourseName').value.trim();
   const date=document.getElementById('newCourseDate').value;
   if(!name){alert('과정명을 입력해 주세요.');return;}
@@ -454,16 +528,35 @@ function addCourse() {
   document.getElementById('newCourseDate').value='';
   loadCourseAdmin();
 }
-function removeCourse(idx) {
+function removeCourse(idx){
   if(!confirm('삭제하시겠습니까?'))return;
   const courses=sGet('courseList')||[];
   courses.splice(idx,1);
   sSet('courseList',courses);
   loadCourseAdmin();
 }
+function uploadCourseImg(name,input){
+  const file=input.files[0];if(!file)return;
+  if(file.size>2*1024*1024){alert('2MB 이하 이미지만 가능합니다.');return;}
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const imgs=sGet('_courseImages')||{};
+    imgs[name]=e.target.result;
+    sSet('_courseImages',imgs);
+    loadCourseAdmin();
+  };
+  reader.readAsDataURL(file);
+}
+function deleteCourseImg(name){
+  if(!confirm('이미지를 삭제하시겠습니까?'))return;
+  const imgs=sGet('_courseImages')||{};
+  delete imgs[name];
+  sSet('_courseImages',imgs);
+  loadCourseAdmin();
+}
 
 // ─── 지원서 과정 드롭다운 ───
-function loadCourseDropdown() {
+function loadCourseDropdown(){
   const courses=sGet('courseList')||[];
   const sel=document.getElementById('courseName');
   const notice=document.getElementById('courseEmptyNotice');
@@ -472,12 +565,10 @@ function loadCourseDropdown() {
   document.getElementById('eduDate').disabled=true;
   if(!courses.length){notice.style.display='block';return;}
   notice.style.display='none';
-  [...new Set(courses.map(c=>c.name))].forEach(n=>{
-    const o=document.createElement('option');o.value=n;o.textContent=n;sel.appendChild(o);
-  });
+  [...new Set(courses.map(c=>c.name))].forEach(n=>{const o=document.createElement('option');o.value=n;o.textContent=n;sel.appendChild(o);});
   window._courseData=courses;
 }
-function onCourseChange() {
+function onCourseChange(){
   const chosen=document.getElementById('courseName').value;
   const dateSel=document.getElementById('eduDate');
   dateSel.innerHTML='<option value="">교육일을 선택하세요</option>';
@@ -489,7 +580,7 @@ function onCourseChange() {
 }
 
 // ─── 협약기업 ───
-function loadBizAdmin() {
+function loadBizAdmin(){
   const list=sGet('bizList')||[];
   const el=document.getElementById('bizList');
   if(!list.length){el.innerHTML='<div class="empty">등록된 협약기업이 없습니다.</div>';return;}
@@ -499,47 +590,38 @@ function loadBizAdmin() {
       <button class="del-btn" onclick="removeBiz(${i})">삭제</button>
     </div>`).join('');
 }
-function addBiz() {
+function addBiz(){
   const num=document.getElementById('newBizNum').value.trim();
   const name=document.getElementById('newBizName').value.trim();
   if(num.length<12){alert('사업자등록번호를 올바르게 입력해 주세요.');return;}
   const list=sGet('bizList')||[];
   if(list.find(b=>b.num===num)){alert('이미 등록된 사업자번호입니다.');return;}
-  list.push({num,name});
-  sSet('bizList',list);
-  document.getElementById('newBizNum').value='';
-  document.getElementById('newBizName').value='';
+  list.push({num,name});sSet('bizList',list);
+  document.getElementById('newBizNum').value='';document.getElementById('newBizName').value='';
   loadBizAdmin();
 }
-function removeBiz(idx) {
+function removeBiz(idx){
   if(!confirm('삭제하시겠습니까?'))return;
-  const list=sGet('bizList')||[];
-  list.splice(idx,1);
-  sSet('bizList',list);
-  loadBizAdmin();
+  const list=sGet('bizList')||[];list.splice(idx,1);sSet('bizList',list);loadBizAdmin();
 }
-async function importBizTxt(input) {
+async function importBizTxt(input){
   const file=input.files[0];if(!file)return;
   const text=await file.text();
   const lines=text.split(/\r?\n/).map(l=>l.trim()).filter(Boolean);
-  const list=sGet('bizList')||[];
-  const existing=list.map(b=>b.num);
+  const list=sGet('bizList')||[];const existing=list.map(b=>b.num);
   let added=0,skipped=0;
   for(const line of lines){
     const sep=line.includes('\t')?'\t':',';
-    const [rawNum,...rest]=line.split(sep);
-    const num=fmtBiz(rawNum.trim());
-    const name=rest.join(sep).trim();
+    const[rawNum,...rest]=line.split(sep);
+    const num=fmtBiz(rawNum.trim());const name=rest.join(sep).trim();
     if(num.length<12){skipped++;continue;}
     if(existing.includes(num)){skipped++;continue;}
     list.push({num,name});existing.push(num);added++;
   }
-  sSet('bizList',list);
-  input.value='';
-  loadBizAdmin();
+  sSet('bizList',list);input.value='';loadBizAdmin();
   alert(`✅ 등록 완료\n- 추가: ${added}건\n- 중복/오류 제외: ${skipped}건`);
 }
-function downloadBizSample() {
+function downloadBizSample(){
   const s='123-45-67890,샘플기업주식회사\n234-56-78901,한국제조(주)\n345-67-89012,스마트테크';
   const a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob(['\uFEFF'+s],{type:'text/plain;charset=utf-8;'}));
@@ -547,8 +629,8 @@ function downloadBizSample() {
 }
 
 // ─── 사업자번호 자동확인 ───
-let bizChecked=false, bizStatusVal='';
-function onBizInput(el) {
+let bizChecked=false,bizStatusVal='';
+function onBizInput(el){
   el.value=fmtBiz(el.value);
   const digits=el.value.replace(/\D/g,'');
   const box=document.getElementById('bizStatus');
@@ -573,18 +655,17 @@ function onBizInput(el) {
 
 // ─── 개인정보동의 ───
 let privacyAgreed=false;
-function openPrivacyModal() { document.getElementById('privacyCheck').checked=privacyAgreed; document.getElementById('privacyModal').classList.add('open'); }
-function closePrivacyModal() { document.getElementById('privacyModal').classList.remove('open'); }
-function confirmPrivacy() {
+function openPrivacyModal(){document.getElementById('privacyCheck').checked=privacyAgreed;document.getElementById('privacyModal').classList.add('open');}
+function closePrivacyModal(){document.getElementById('privacyModal').classList.remove('open');}
+function confirmPrivacy(){
   if(!document.getElementById('privacyCheck').checked){alert('동의 체크박스를 선택해 주세요.');return;}
-  privacyAgreed=true;
-  closePrivacyModal();
+  privacyAgreed=true;closePrivacyModal();
   const st=document.getElementById('privacyStatus');
   st.textContent='✅ 확인되었습니다.';st.style.color='#2e7d32';st.style.fontWeight='600';
 }
 
 // ─── 제출 ───
-function submitForm() {
+function submitForm(){
   if(!document.getElementById('confirmCheck').checked){alert('안내 내용을 확인 후 체크해 주세요.');return;}
   if(!privacyAgreed){alert('개인정보동의서를 확인 후 동의해 주세요.');return;}
   const vals={courseName:document.getElementById('courseName').value.trim(),eduDate:document.getElementById('eduDate').value,name:document.getElementById('name').value.trim(),rrn:document.getElementById('rrn').value.trim(),phone:document.getElementById('phone').value.trim(),bizNum:document.getElementById('bizNum').value.trim()};
@@ -597,7 +678,7 @@ function submitForm() {
   sSet('applications',apps);
   document.getElementById(bizStatusVal==='confirmed'?'modalConfirmed':'modalPending').classList.add('open');
 }
-function closeModal(id) {
+function closeModal(id){
   document.getElementById(id).classList.remove('open');
   ['name','rrn','phone','bizNum'].forEach(i=>document.getElementById(i).value='');
   document.getElementById('courseName').value='';
@@ -611,60 +692,99 @@ function closeModal(id) {
   bizChecked=false;bizStatusVal='';
 }
 
-// ─── 협약서 파일 ───
-function handleFileUpload(input) {
+// ─── 접수 목록 ───
+function renderList(){
+  const apps=sGet('applications')||[];
+  const status=document.getElementById('filterStatus')?.value||'';
+  const name=document.getElementById('filterName')?.value||'';
+  const biz=document.getElementById('filterBiz')?.value||'';
+  const filtered=apps.filter(a=>(!status||a.status===status)&&(!name||a.name.includes(name))&&(!biz||a.bizNum.includes(biz)));
+  document.getElementById('totalCount').textContent=filtered.length+'건';
+  const body=document.getElementById('appListBody');
+  if(!filtered.length){body.innerHTML='<tr><td colspan="10" class="empty">접수된 지원서가 없습니다.</td></tr>';return;}
+  body.innerHTML=filtered.map((a,i)=>`
+    <tr>
+      <td>${i+1}</td>
+      <td style="max-width:120px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${a.courseName}</td>
+      <td style="white-space:nowrap;">${a.eduDate}</td>
+      <td>${a.name}</td>
+      <td style="font-family:monospace;">${a.rrnMasked}</td>
+      <td>${a.phone}</td>
+      <td style="font-family:monospace;">${a.bizNum}</td>
+      <td><span class="badge ${a.status}">${a.status==='confirmed'?'접수확정':'접수대기'}</span></td>
+      <td style="white-space:nowrap;">${a.createdAt}</td>
+      <td><button class="del-btn" onclick="deleteApp(${a.id})">삭제</button></td>
+    </tr>`).join('');
+}
+function deleteApp(id){
+  if(!confirm('삭제하시겠습니까?'))return;
+  sSet('applications',(sGet('applications')||[]).filter(a=>a.id!==id));renderList();
+}
+function downloadCSV(){
+  const apps=sGet('applications')||[];
+  if(!apps.length){alert('데이터가 없습니다.');return;}
+  const header=['No','과정명','교육일','이름','주민번호','연락처','사업자번호','상태','접수일시'];
+  const rows=apps.map((a,i)=>[i+1,a.courseName,a.eduDate,a.name,atob(a.rrnFull||''),a.phone,a.bizNum,a.status==='confirmed'?'접수확정':'접수대기',a.createdAt]);
+  const csv='\uFEFF'+[header,...rows].map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));
+  a.download=`접수목록_${new Date().toISOString().slice(0,10)}.csv`;a.click();
+}
+
+// ─── 파일들 ───
+function handleFileUpload(input){
   const file=input.files[0];if(!file)return;
   if(file.size>4*1024*1024){alert('4MB 이하 파일만 가능합니다.');return;}
   const reader=new FileReader();
-  reader.onload=e=>{
-    sSet('_contractFile',{name:file.name,size:(file.size/1024).toFixed(1)+'KB',data:e.target.result,uploadedAt:new Date().toLocaleString('ko-KR')});
-    loadFileInfo();
-  };
+  reader.onload=e=>{sSet('_contractFile',{name:file.name,size:(file.size/1024).toFixed(1)+'KB',data:e.target.result,uploadedAt:new Date().toLocaleString('ko-KR')});loadFileInfo();};
   reader.readAsDataURL(file);
 }
-function loadFileInfo() {
-  const info=sGet('_contractFile');
-  const el=document.getElementById('currentFileInfo');
+function loadFileInfo(){
+  const info=sGet('_contractFile');const el=document.getElementById('currentFileInfo');
   el.style.display='block';
   el.innerHTML=info?`✅ 등록된 파일: <strong>${info.name}</strong> (${info.size}) — ${info.uploadedAt}`:'⚠️ 등록된 협약서 파일이 없습니다.';
 }
-function downloadContract() {
-  const info=sGet('_contractFile');
-  if(!info){alert('등록된 파일이 없습니다.');return;}
+function downloadContract(){
+  const info=sGet('_contractFile');if(!info){alert('등록된 파일이 없습니다.');return;}
   const a=document.createElement('a');a.href=info.data;a.download=info.name;a.click();
 }
-
-// ─── QR 이미지 ───
-function handleQrUpload(input) {
+function handleQrUpload(input){
   const file=input.files[0];if(!file)return;
   if(file.size>1*1024*1024){alert('1MB 이하 이미지만 가능합니다.');return;}
   const reader=new FileReader();
-  reader.onload=e=>{
-    sSet('_qrImage',{data:e.target.result,name:file.name,uploadedAt:new Date().toLocaleString('ko-KR')});
-    loadQrInfo();
-    loadQrDisplay();
-  };
+  reader.onload=e=>{sSet('_qrImage',{data:e.target.result,name:file.name,uploadedAt:new Date().toLocaleString('ko-KR')});loadQrInfo();loadQrDisplay();};
   reader.readAsDataURL(file);
 }
-function loadQrInfo() {
-  const info=sGet('_qrImage');
-  const el=document.getElementById('currentQrInfo');
-  if(!el)return;
-  el.style.display='block';
-  if(info) el.innerHTML=`✅ 등록된 QR: <strong>${info.name}</strong> — ${info.uploadedAt}<br><img src="${info.data}" style="width:80px;height:80px;margin-top:8px;border-radius:6px;border:1px solid #e2e8f0;">`;
+function loadQrInfo(){
+  const info=sGet('_qrImage');const el=document.getElementById('currentQrInfo');
+  if(!el)return;el.style.display='block';
+  if(info)el.innerHTML=`✅ 등록된 QR: <strong>${info.name}</strong> — ${info.uploadedAt}<br><img src="${info.data}" style="width:80px;height:80px;margin-top:8px;border-radius:6px;border:1px solid #e2e8f0;">`;
   else el.innerHTML='⚠️ 등록된 QR 이미지가 없습니다.';
 }
-function loadQrDisplay() {
-  const info=sGet('_qrImage');
-  const wrap=document.getElementById('footerQr');
-  const img=document.getElementById('qrImgDisplay');
-  if(info){img.src=info.data;wrap.style.display='flex';}
-  else wrap.style.display='none';
+function loadQrDisplay(){
+  const info=sGet('_qrImage');const wrap=document.getElementById('footerQr');const img=document.getElementById('qrImgDisplay');
+  if(info){img.src=info.data;wrap.style.display='flex';}else wrap.style.display='none';
+}
+function handleOgUpload(input){
+  const file=input.files[0];if(!file)return;
+  if(file.size>1*1024*1024){alert('1MB 이하 이미지만 가능합니다.');return;}
+  const reader=new FileReader();
+  reader.onload=e=>{sSet('_ogImage',{data:e.target.result,name:file.name,uploadedAt:new Date().toLocaleString('ko-KR')});loadOgInfo();applyOgMeta();};
+  reader.readAsDataURL(file);
+}
+function loadOgInfo(){
+  const info=sGet('_ogImage');const el=document.getElementById('currentOgInfo');
+  if(!el)return;el.style.display='block';
+  if(info)el.innerHTML=`✅ 등록된 썸네일: <strong>${info.name}</strong> — ${info.uploadedAt}<br><img src="${info.data}" style="max-width:200px;margin-top:8px;border-radius:6px;border:1px solid #e2e8f0;">`;
+  else el.innerHTML='⚠️ 등록된 썸네일 이미지가 없습니다.';
+}
+function applyOgMeta(){
+  const info=sGet('_ogImage');
+  if(info){document.getElementById('ogMetaImage').setAttribute('content',info.data);document.getElementById('twitterMetaImage').setAttribute('content',info.data);}
 }
 
 // 초기 로드
-loadCourseDropdown();
-loadQrDisplay();
+loadCourseDropdown();loadSchedule();loadQrDisplay();applyOgMeta();
 </script>
 </body>
 </html>
