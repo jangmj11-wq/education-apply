@@ -387,9 +387,31 @@
 </div>
 
 <script>
-// ─── Storage ───
-function sGet(k){try{const v=localStorage.getItem(k);return v?JSON.parse(v):null;}catch{return null;}}
-function sSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){console.error(e);}}
+// ─── Storage (Firebase Firestore) ───
+const _fb = {
+  db: null,
+  init() {
+    if (this.db) return;
+    const app = window._firebaseApp;
+    this.db = window._firebaseFirestore.getFirestore(app);
+  }
+};
+
+async function sGet(k) {
+  try {
+    _fb.init();
+    const { doc, getDoc } = window._firebaseFirestore;
+    const snap = await getDoc(doc(_fb.db, '_store', k));
+    return snap.exists() ? snap.data().v : null;
+  } catch { return null; }
+}
+async function sSet(k, v) {
+  try {
+    _fb.init();
+    const { doc, setDoc } = window._firebaseFirestore;
+    await setDoc(doc(_fb.db, '_store', k), { v });
+  } catch(e) { console.error(e); }
+}
 
 // ─── 색상 팔레트 ───
 const COLORS=[
@@ -783,8 +805,35 @@ function applyOgMeta(){
   if(info){document.getElementById('ogMetaImage').setAttribute('content',info.data);document.getElementById('twitterMetaImage').setAttribute('content',info.data);}
 }
 
-// 초기 로드
-loadCourseDropdown();loadSchedule();loadQrDisplay();applyOgMeta();
+// 초기 로드 (firebaseReady 이벤트 후 실행)
+async function init() {
+  await loadCourseDropdown();
+  await loadSchedule();
+  await loadQrDisplay();
+  applyOgMeta();
+}
+</script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import * as firestore from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCjGoAs0lvWd9nbZTehNu3iGqXfRqpGy0s",
+    authDomain: "education-apply.firebaseapp.com",
+    databaseURL: "https://education-apply-default-rtdb.firebaseio.com",
+    projectId: "education-apply",
+    storageBucket: "education-apply.firebasestorage.app",
+    messagingSenderId: "613020446922",
+    appId: "1:613020446922:web:ca1dda43e6e66a8b70c433"
+  };
+
+  window._firebaseApp = initializeApp(firebaseConfig);
+  window._firebaseFirestore = firestore;
+  window.dispatchEvent(new Event('firebaseReady'));
+</script>
+
+<script>
+window.addEventListener('firebaseReady', () => { init(); });
 </script>
 </body>
 </html>
