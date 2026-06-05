@@ -387,27 +387,23 @@
 </div>
 
 <script>
-// ─── Storage (Firebase Firestore) ───
-const _fb = { db: null, init() { if(this.db)return; this.db=window._firebaseFirestore.getFirestore(window._firebaseApp); } };
-
+// ─── Storage: Firebase 로드 전 임시 큐, 로드 후 실제 함수로 교체 ───
+let _db = null;
 async function sGet(k) {
+  if (!_db) { console.error('DB not ready'); return null; }
   try {
-    _fb.init();
-    const {doc,getDoc}=window._firebaseFirestore;
-    const snap=await getDoc(doc(_fb.db,'_store',k));
-    if(!snap.exists())return null;
-    const raw=snap.data().v;
-    // Firestore에서 배열이 object로 올 수 있으므로 JSON 왕복으로 안전하게 처리
-    return JSON.parse(JSON.stringify(raw));
-  } catch(e){ console.error('sGet error',k,e); return null; }
+    const { doc, getDoc } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+    const snap = await getDoc(doc(_db, '_store', k));
+    if (!snap.exists()) return null;
+    return JSON.parse(JSON.stringify(snap.data().v));
+  } catch(e) { console.error('sGet error', k, e); return null; }
 }
-async function sSet(k,v) {
+async function sSet(k, v) {
+  if (!_db) { console.error('DB not ready'); return; }
   try {
-    _fb.init();
-    const {doc,setDoc}=window._firebaseFirestore;
-    // JSON 왕복으로 순수 plain object/array로 변환 후 저장
-    await setDoc(doc(_fb.db,'_store',k),{v:JSON.parse(JSON.stringify(v))});
-  } catch(e){ console.error('sSet error',k,e); }
+    const { doc, setDoc } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+    await setDoc(doc(_db, '_store', k), { v: JSON.parse(JSON.stringify(v)) });
+  } catch(e) { console.error('sSet error', k, e); }
 }
 
 // 배열 보장 헬퍼
@@ -842,25 +838,27 @@ async function init() {
 </script>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import * as firestore from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyCjGoAs0lvWd9nbZTehNu3iGqXfRqpGy0s",
     authDomain: "education-apply.firebaseapp.com",
-    databaseURL: "https://education-apply-default-rtdb.firebaseio.com",
     projectId: "education-apply",
     storageBucket: "education-apply.firebasestorage.app",
     messagingSenderId: "613020446922",
     appId: "1:613020446922:web:ca1dda43e6e66a8b70c433"
   };
 
-  window._firebaseApp = initializeApp(firebaseConfig);
-  window._firebaseFirestore = firestore;
-  window.dispatchEvent(new Event('firebaseReady'));
+  const app = initializeApp(firebaseConfig);
+  window._db = getFirestore(app);
+  // 일반 스크립트의 _db 변수에도 연결
+  document.dispatchEvent(new CustomEvent('firebaseReady', { detail: window._db }));
 </script>
-
 <script>
-window.addEventListener('firebaseReady', () => { init(); });
+  document.addEventListener('firebaseReady', (e) => {
+    _db = e.detail;
+    init();
+  });
 </script>
 </body>
 </html>
