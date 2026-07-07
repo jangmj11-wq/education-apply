@@ -37,41 +37,21 @@
   .submit-btn:hover{background:#154188;}
   .course-empty-notice{background:#fff8e1;border:1px solid #ffc107;border-radius:8px;padding:12px 16px;font-size:13px;color:#856404;margin-bottom:16px;display:none;}
 
-  /* 일정표 */
   .schedule-wrap{background:white;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,0.08);padding:20px 24px;margin-bottom:20px;}
   .schedule-title{font-size:13px;font-weight:600;color:#888;margin-bottom:14px;letter-spacing:0.03em;}
   .schedule-hint{font-size:11px;color:#aaa;font-weight:400;margin-left:6px;}
-  .srow{display:flex;align-items:center;gap:12px;padding:9px 12px;border:0.5px solid #e2e8f0;border-radius:10px;margin-bottom:8px;flex-wrap:wrap;background:#fafbff;position:relative;}
-  .clabel{display:flex;align-items:center;gap:8px;min-width:180px;flex-shrink:0;position:relative;}
-  .cdot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
-  .cname{font-size:13px;font-weight:600;color:#1a4fa0;cursor:pointer;border-bottom:1px dashed #7aa0d4;padding-bottom:1px;white-space:nowrap;}
-  .cname:hover{color:#0d3a7a;}
-  .sdivider{width:0.5px;height:26px;background:#d1d5db;flex-shrink:0;}
-  .chips{display:flex;flex-wrap:wrap;gap:6px;}
-  .chip{font-size:12px;padding:3px 10px;border-radius:20px;border:0.5px solid;white-space:nowrap;}
 
-  /* 호버 팝업 */
-  .hover-popup{display:none;position:absolute;left:0;top:calc(100% + 8px);z-index:99;width:260px;background:white;border:0.5px solid #d1d5db;border-radius:12px;box-shadow:0 6px 24px rgba(0,0,0,0.13);overflow:hidden;}
-  .clabel:hover .hover-popup{display:block;}
-  .popup-img-wrap{background:#f0f4f8;min-height:160px;display:flex;align-items:center;justify-content:center;}
-  .popup-img-wrap img{width:100%;display:block;}
-  .popup-noimg{font-size:12px;color:#aaa;text-align:center;padding:40px 16px;}
-  .popup-footer-bar{padding:10px 14px;background:#f8faff;border-top:0.5px solid #e2e8f0;font-size:12px;color:#1a4fa0;font-weight:600;}
-
-  /* 푸터 */
   .footer-info{margin-top:28px;padding:20px;background:white;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,0.08);display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
   .footer-qr{display:flex;flex-direction:column;align-items:center;gap:4px;}
   .footer-qr img{width:90px;height:90px;border-radius:6px;border:1px solid #e2e8f0;}
   .footer-qr span{font-size:11px;color:#888;}
 
-  /* 관리자 오버레이 로그인 */
   .admin-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;align-items:center;justify-content:center;}
   .admin-overlay.open{display:flex;}
   .admin-box{background:white;border-radius:14px;padding:32px;max-width:360px;width:90%;}
   .admin-box h2{font-size:17px;color:#1a4fa0;margin-bottom:20px;}
   .admin-close{float:right;background:none;border:none;font-size:20px;cursor:pointer;color:#888;margin-top:-4px;}
 
-  /* 관리자 메인 */
   .admin-wrap{max-width:980px;margin:32px auto;padding:0 16px 40px;}
   .tab-bar{display:flex;margin-bottom:20px;border-bottom:2px solid #e2e8f0;overflow-x:auto;}
   .tab{padding:10px 18px;cursor:pointer;font-size:14px;font-weight:600;color:#888;border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap;}
@@ -100,7 +80,6 @@
   .current-file{font-size:13px;color:#555;background:#f0f4f8;padding:8px 12px;border-radius:6px;margin-bottom:12px;}
   .empty{text-align:center;color:#999;padding:30px;font-size:14px;}
 
-  /* 모달 */
   .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:100;align-items:center;justify-content:center;}
   .modal-bg.open{display:flex;}
   .modal{background:white;border-radius:14px;padding:28px;max-width:400px;width:90%;text-align:center;}
@@ -112,7 +91,6 @@
   .dl-modal-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:12px;background:#BA7517;color:#FAEEDA;border:none;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;}
   .confirm-only-btn{display:block;width:100%;padding:11px;border:0.5px solid #d1d5db;background:transparent;border-radius:8px;font-size:14px;color:#666;cursor:pointer;}
 
-  /* 과정 이미지 업로드 */
   .course-img-row{display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap;}
   .course-img-thumb{width:48px;height:48px;border-radius:6px;border:1px solid #e2e8f0;object-fit:cover;}
   .img-upload-btn{padding:5px 12px;background:#e8f0fe;color:#1a4fa0;border:1px solid #7aa0d4;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;}
@@ -132,12 +110,9 @@
 <!-- 지원서 페이지 -->
 <div id="page-apply" class="page active">
   <div class="apply-wrap">
-
-    <!-- 일정표 -->
     <div class="schedule-wrap">
       <div class="schedule-title">교육 일정 안내 <span class="schedule-hint">※ 과정명에 마우스를 올리면 상세 정보를 확인할 수 있습니다</span></div>
       <div id="scheduleList"><div style="font-size:13px;color:#aaa;padding:8px 0;">등록된 교육과정이 없습니다.</div></div>
-      <div class="tab" onclick="adminTab('sms',this)">✉️ 문자 생성</div>
     </div>
 
     <div class="notice">✅ 아래 양식을 작성해 주세요. <strong>주민등록번호는 암호화</strong>되어 안전하게 저장됩니다.</div>
@@ -259,7 +234,7 @@
         <div class="add-row">
           <input type="text" id="newCourseName" placeholder="과정명 입력">
           <input type="date" id="newCourseDate">
-          <button class="add-btn" id="addCourseBtn">+ 추가</button>
+          <button class="add-btn" onclick="addCourse()">+ 추가</button>
         </div>
         <div id="courseList"><div class="empty">등록된 교육과정이 없습니다.</div></div>
       </div>
@@ -286,53 +261,7 @@
       </div>
     </div>
 
-    <!-- 문자 생성 탭 -->
-    <div id="tab-sms" style="display:none;">
-      <div class="card">
-        <h2>✉️ 교육 안내 문자 생성</h2>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
-          <div class="form-group" style="margin-bottom:0;">
-            <label>과정명 <span class="req">*</span></label>
-            <select id="smsCourseName" onchange="updateSmsDate()">
-              <option value="">과정을 선택하세요</option>
-            </select>
-          </div>
-          <div class="form-group" style="margin-bottom:0;">
-            <label>교육일 <span class="req">*</span></label>
-            <select id="smsCourseDate" disabled>
-              <option value="">과정을 먼저 선택하세요</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-group">
-          <label>교육 장소 <span class="req">*</span></label>
-          <input type="text" id="smsLocation" placeholder="예: 제주관광대학교 본관 3층 강의실">
-        </div>
-        <div class="form-group">
-          <label>문자 템플릿</label>
-          <textarea id="smsTemplate" rows="6" style="width:100%;padding:10px 12px;border:1.5px solid #d1d5db;border-radius:8px;font-size:14px;resize:vertical;line-height:1.7;">[제주관광대학교 공동훈련센터]
-{{과정명}} 교육 안내드립니다.
-
-📅 교육일: {{교육일}}
-📍 장소: {{장소}}
-
-교육 참석 부탁드립니다.
-문의: 064-754-5860~1</textarea>
-          <div style="font-size:12px;color:#888;margin-top:6px;">{{과정명}} {{교육일}} {{장소}} 를 입력하면 자동으로 치환됩니다.</div>
-        </div>
-        <button class="add-btn" onclick="generateSms()" style="width:100%;padding:12px;font-size:15px;margin-bottom:16px;">✉️ 문자 내용 생성</button>
-
-        <div id="smsResult" style="display:none;">
-          <div style="font-size:13px;font-weight:600;color:#444;margin-bottom:8px;">📋 완성된 문자 내용</div>
-          <div id="smsResultText" style="background:#f8faff;border:1.5px solid #c7d7f0;border-radius:10px;padding:16px;font-size:14px;line-height:1.8;white-space:pre-wrap;color:#222;"></div>
-          <div style="display:flex;gap:8px;margin-top:12px;">
-            <button onclick="copySms()" style="flex:1;padding:11px;background:#1a4fa0;color:white;border:none;border-radius:8px;cursor:pointer;font-size:14px;font-weight:600;">📋 복사하기</button>
-            <button onclick="document.getElementById('smsResult').style.display='none'" style="padding:11px 18px;background:#f3f4f6;color:#555;border:1px solid #d1d5db;border-radius:8px;cursor:pointer;font-size:14px;">닫기</button>
-          </div>
-          <div id="smsCopied" style="display:none;text-align:center;color:#2e7d32;font-size:13px;margin-top:8px;font-weight:600;">✅ 복사되었습니다!</div>
-        </div>
-      </div>
-    </div>
+    <!-- 파일 관리 -->
     <div id="tab-file" style="display:none;">
       <div class="card">
         <h2>📁 협약서 파일 업로드</h2>
@@ -442,9 +371,7 @@ async function sSet(k, v) {
   try { localStorage.setItem(k, JSON.stringify(v)); } catch(e) { console.error(e); }
 }
 
-// 배열 보장 헬퍼
 function toArr(v){ return Array.isArray(v)?v:(v&&typeof v==='object'?Object.values(v):[]); }
-// 객체 보장 헬퍼  
 function toObj(v){ return (v&&typeof v==='object'&&!Array.isArray(v))?v:{}; }
 const COLORS=[
   {dot:'#185FA5',chipBg:'#E6F1FB',chipColor:'#0C447C',chipBorder:'#B5D4F4'},
@@ -490,20 +417,18 @@ async function adminTab(t,el){
   if(t==='list')renderList();
   if(t==='course')loadCourseAdmin();
   if(t==='biz')loadBizAdmin();
-  if(t==='sms') loadSmsAdmin();
   if(t==='file'){await loadFileInfo();await loadQrInfo();await loadOgInfo();}
 }
 
-// ─── 일정표 (지원서 상단) ───
-function loadSchedule(){
-  const courses=sGet('courseList')||[];
+// ─── 일정표 ───
+async function loadSchedule(){
+  const courses=await sGet('courseList')||[];
   const el=document.getElementById('scheduleList');
   if(!courses.length){el.innerHTML='<div style="font-size:13px;color:#aaa;padding:8px 0;">등록된 교육과정이 없습니다.</div>';return;}
-  // 과정명별 그룹핑
   const groups={};
   courses.forEach(c=>{if(!groups[c.name])groups[c.name]=[];groups[c.name].push(c.date);});
   const names=Object.keys(groups);
-  const imgs=sGet('_courseImages')||{};
+  const imgs=await sGet('_courseImages')||{};
   el.innerHTML=names.map((name,i)=>{
     const col=COLORS[i%COLORS.length];
     const dates=groups[name];
@@ -526,8 +451,6 @@ function loadSchedule(){
         <div style="display:flex;flex-wrap:wrap;gap:6px;">${chips}</div>
       </div>`;
   }).join('');
-
-  // 호버 이벤트
   el.querySelectorAll('.clabel-wrap').forEach(wrap=>{
     const popup=wrap.querySelector('.hover-popup');
     wrap.addEventListener('mouseenter',()=>popup.style.display='block');
@@ -536,12 +459,11 @@ function loadSchedule(){
 }
 
 // ─── 교육과정 관리 (관리자) ───
-function loadCourseAdmin(){
-  const courses=sGet('courseList')||[];
-  const imgs=sGet('_courseImages')||{};
+async function loadCourseAdmin(){
+  const courses=await sGet('courseList')||[];
+  const imgs=await sGet('_courseImages')||{};
   const el=document.getElementById('courseList');
   if(!courses.length){el.innerHTML='<div class="empty">등록된 교육과정이 없습니다.</div>';return;}
-  // 과정명별 그룹
   const groups={};const order=[];
   courses.forEach((c,i)=>{if(!groups[c.name]){groups[c.name]=[];order.push(c.name);}groups[c.name].push({date:c.date,idx:i});});
   el.innerHTML=order.map(name=>{
@@ -570,49 +492,49 @@ function loadCourseAdmin(){
   }).join('');
 }
 
-function addCourse(){
+async function addCourse(){
   const name=document.getElementById('newCourseName').value.trim();
   const date=document.getElementById('newCourseDate').value;
   if(!name){alert('과정명을 입력해 주세요.');return;}
   if(!date){alert('교육일을 선택해 주세요.');return;}
-  const courses=sGet('courseList')||[];
+  const courses=await sGet('courseList')||[];
   if(courses.find(c=>c.name===name&&c.date===date)){alert('동일한 과정이 이미 존재합니다.');return;}
   courses.push({name,date});
-  sSet('courseList',courses);
+  await sSet('courseList',courses);
   document.getElementById('newCourseName').value='';
   document.getElementById('newCourseDate').value='';
   loadCourseAdmin();
 }
-function removeCourse(idx){
+async function removeCourse(idx){
   if(!confirm('삭제하시겠습니까?'))return;
-  const courses=sGet('courseList')||[];
+  const courses=await sGet('courseList')||[];
   courses.splice(idx,1);
-  sSet('courseList',courses);
+  await sSet('courseList',courses);
   loadCourseAdmin();
 }
-function uploadCourseImg(name,input){
+async function uploadCourseImg(name,input){
   const file=input.files[0];if(!file)return;
   if(file.size>2*1024*1024){alert('2MB 이하 이미지만 가능합니다.');return;}
   const reader=new FileReader();
-  reader.onload=e=>{
-    const imgs=sGet('_courseImages')||{};
+  reader.onload=async e=>{
+    const imgs=await sGet('_courseImages')||{};
     imgs[name]=e.target.result;
-    sSet('_courseImages',imgs);
+    await sSet('_courseImages',imgs);
     loadCourseAdmin();
   };
   reader.readAsDataURL(file);
 }
-function deleteCourseImg(name){
+async function deleteCourseImg(name){
   if(!confirm('이미지를 삭제하시겠습니까?'))return;
-  const imgs=sGet('_courseImages')||{};
+  const imgs=await sGet('_courseImages')||{};
   delete imgs[name];
-  sSet('_courseImages',imgs);
+  await sSet('_courseImages',imgs);
   loadCourseAdmin();
 }
 
 // ─── 지원서 과정 드롭다운 ───
-function loadCourseDropdown(){
-  const courses=sGet('courseList')||[];
+async function loadCourseDropdown(){
+  const courses=await sGet('courseList')||[];
   const sel=document.getElementById('courseName');
   const notice=document.getElementById('courseEmptyNotice');
   sel.innerHTML='<option value="">과정을 선택하세요</option>';
@@ -634,19 +556,9 @@ function onCourseChange(){
   if(dates.length===1)dateSel.value=dates[0];
 }
 
-function onCourseChange(){
-  const chosen=document.getElementById('courseName').value;
-  const dateSel=document.getElementById('eduDate');
-  dateSel.innerHTML='<option value="">교육일을 선택하세요</option>';
-  if(!chosen){dateSel.disabled=true;return;}
-  const dates=(window._courseData||[]).filter(c=>c.name===chosen).map(c=>c.date);
-  dates.forEach(d=>{const o=document.createElement('option');o.value=d;o.textContent=d;dateSel.appendChild(o);});
-  dateSel.disabled=false;
-  if(dates.length===1)dateSel.value=dates[0];
-}
-// ─── 협약기업 ───
-function loadBizAdmin(){
-  const list=sGet('bizList')||[];
+// ─── 협약기업 ───  ✅ 핵심 수정 부분
+async function loadBizAdmin(){
+  const list=await sGet('bizList')||[];          // ✅ await 추가
   const el=document.getElementById('bizList');
   if(!list.length){el.innerHTML='<div class="empty">등록된 협약기업이 없습니다.</div>';return;}
   el.innerHTML=list.map((b,i)=>`
@@ -655,25 +567,31 @@ function loadBizAdmin(){
       <button class="del-btn" onclick="removeBiz(${i})">삭제</button>
     </div>`).join('');
 }
-function addBiz(){
+async function addBiz(){
   const num=document.getElementById('newBizNum').value.trim();
   const name=document.getElementById('newBizName').value.trim();
   if(num.length<12){alert('사업자등록번호를 올바르게 입력해 주세요.');return;}
-  const list=sGet('bizList')||[];
+  const list=await sGet('bizList')||[];          // ✅ await 추가
   if(list.find(b=>b.num===num)){alert('이미 등록된 사업자번호입니다.');return;}
-  list.push({num,name});sSet('bizList',list);
-  document.getElementById('newBizNum').value='';document.getElementById('newBizName').value='';
+  list.push({num,name});
+  await sSet('bizList',list);
+  document.getElementById('newBizNum').value='';
+  document.getElementById('newBizName').value='';
   loadBizAdmin();
 }
-function removeBiz(idx){
+async function removeBiz(idx){
   if(!confirm('삭제하시겠습니까?'))return;
-  const list=sGet('bizList')||[];list.splice(idx,1);sSet('bizList',list);loadBizAdmin();
+  const list=await sGet('bizList')||[];          // ✅ await 추가
+  list.splice(idx,1);
+  await sSet('bizList',list);
+  loadBizAdmin();
 }
 async function importBizTxt(input){
   const file=input.files[0];if(!file)return;
   const text=await file.text();
   const lines=text.split(/\r?\n/).map(l=>l.trim()).filter(Boolean);
-  const list=sGet('bizList')||[];const existing=list.map(b=>b.num);
+  const list=await sGet('bizList')||[];          // ✅ await 추가
+  const existing=list.map(b=>b.num);
   let added=0,skipped=0;
   for(const line of lines){
     const sep=line.includes('\t')?'\t':',';
@@ -683,7 +601,9 @@ async function importBizTxt(input){
     if(existing.includes(num)){skipped++;continue;}
     list.push({num,name});existing.push(num);added++;
   }
-  sSet('bizList',list);input.value='';loadBizAdmin();
+  await sSet('bizList',list);
+  input.value='';
+  loadBizAdmin();
   alert(`✅ 등록 완료\n- 추가: ${added}건\n- 중복/오류 제외: ${skipped}건`);
 }
 function downloadBizSample(){
@@ -700,8 +620,7 @@ async function onBizInput(el){
   const box=document.getElementById('bizStatus');
   if(digits.length<10){box.style.display='none';bizChecked=false;bizStatusVal='';return;}
   const num=fmtBiz(digits);
-  const raw=await sGet('bizList');
-  const list=Array.isArray(raw)?raw:[];
+  const list=await sGet('bizList')||[];          // ✅ await 추가
   const found=list.find(b=>b.num===num);
   box.style.display='block';
   if(found){
@@ -730,6 +649,7 @@ function confirmPrivacy(){
 }
 
 // ─── 제출 ───
+let bizChecked=false,bizStatusVal='';
 async function submitForm(){
   if(!document.getElementById('confirmCheck').checked){alert('안내 내용을 확인 후 체크해 주세요.');return;}
   if(!privacyAgreed){alert('개인정보동의서를 확인 후 동의해 주세요.');return;}
@@ -737,8 +657,7 @@ async function submitForm(){
   const labels={courseName:'과정명',eduDate:'교육일',name:'이름',rrn:'주민등록번호',phone:'연락처',bizNum:'사업자등록번호'};
   for(const[k,v] of Object.entries(vals)){if(!v){alert(`${labels[k]}을(를) 입력/선택해 주세요.`);return;}}
   if(!bizChecked){alert('사업자등록번호를 입력해 주세요.');return;}
-  const raw=await sGet('applications');
-  const apps=Array.isArray(raw)?raw:[];
+  const apps=await sGet('applications')||[];     // ✅ await 추가
   const masked=vals.rrn.slice(0,8)+'******';
   apps.push({id:Date.now(),courseName:vals.courseName,eduDate:vals.eduDate,name:vals.name,rrnMasked:masked,rrnFull:btoa(vals.rrn),phone:vals.phone,bizNum:vals.bizNum,status:bizStatusVal,createdAt:new Date().toLocaleString('ko-KR')});
   await sSet('applications',apps);
@@ -760,8 +679,7 @@ function closeModal(id){
 
 // ─── 접수 목록 ───
 async function renderList(){
-  const raw=await sGet('applications');
-  const apps=Array.isArray(raw)?raw:[];
+  const apps=await sGet('applications')||[];     // ✅ await 추가
   const status=document.getElementById('filterStatus')?.value||'';
   const name=document.getElementById('filterName')?.value||'';
   const biz=document.getElementById('filterBiz')?.value||'';
@@ -785,14 +703,12 @@ async function renderList(){
 }
 async function deleteApp(id){
   if(!confirm('삭제하시겠습니까?'))return;
-  const raw=await sGet('applications');
-  const apps=Array.isArray(raw)?raw:[];
+  const apps=await sGet('applications')||[];     // ✅ await 추가
   await sSet('applications',apps.filter(a=>a.id!==id));
   renderList();
 }
 async function downloadCSV(){
-  const raw=await sGet('applications');
-  const apps=Array.isArray(raw)?raw:[];
+  const apps=await sGet('applications')||[];     // ✅ await 추가
   if(!apps.length){alert('데이터가 없습니다.');return;}
   const header=['No','과정명','교육일','이름','주민번호','연락처','사업자번호','상태','접수일시'];
   const rows=apps.map((a,i)=>[i+1,a.courseName,a.eduDate,a.name,atob(a.rrnFull||''),a.phone,a.bizNum,a.status==='confirmed'?'접수확정':'접수대기',a.createdAt]);
@@ -800,77 +716,6 @@ async function downloadCSV(){
   const a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));
   a.download=`접수목록_${new Date().toISOString().slice(0,10)}.csv`;a.click();
-}
-
-// ─── 문자 생성 ───
-async function loadSmsAdmin(){
-  // localStorage에서 직접 읽기
-  let courses=[];
-  try {
-    const stored=localStorage.getItem('courseList');
-    if(stored){
-      const parsed=JSON.parse(stored);
-      courses=Array.isArray(parsed)?parsed:Object.values(parsed);
-    }
-  } catch(e){ courses=[]; }
-
-  const sel=document.getElementById('smsCourseName');
-  sel.innerHTML='<option value="">과정을 선택하세요</option>';
-
-  if(!courses.length){
-    sel.innerHTML='<option value="">등록된 교육과정이 없습니다</option>';
-  } else {
-    const names=[...new Set(courses.map(c=>c.name))];
-    names.forEach(n=>{
-      const o=document.createElement('option');o.value=n;o.textContent=n;sel.appendChild(o);
-    });
-  }
-  window._smsCourseData=courses;
-  document.getElementById('smsCourseDate').innerHTML='<option value="">과정을 먼저 선택하세요</option>';
-  document.getElementById('smsCourseDate').disabled=true;
-  document.getElementById('smsResult').style.display='none';
-}
-function updateSmsDate(){
-  const chosen=document.getElementById('smsCourseName').value;
-  const dateSel=document.getElementById('smsCourseDate');
-  dateSel.innerHTML='<option value="">교육일을 선택하세요</option>';
-  if(!chosen){dateSel.disabled=true;return;}
-  const dates=(window._smsCourseData||[]).filter(c=>c.name===chosen).map(c=>c.date);
-  dates.forEach(d=>{const o=document.createElement('option');o.value=d;o.textContent=d;dateSel.appendChild(o);});
-  dateSel.disabled=false;
-  if(dates.length===1)dateSel.value=dates[0];
-}
-function generateSms(){
-  const name=document.getElementById('smsCourseName').value;
-  const date=document.getElementById('smsCourseDate').value;
-  const location=document.getElementById('smsLocation').value.trim();
-  const template=document.getElementById('smsTemplate').value;
-  if(!name){alert('과정명을 선택해 주세요.');return;}
-  if(!date){alert('교육일을 선택해 주세요.');return;}
-  if(!location){alert('교육 장소를 입력해 주세요.');return;}
-  const result=template
-    .replace(/{{과정명}}/g, name)
-    .replace(/{{교육일}}/g, date)
-    .replace(/{{장소}}/g, location);
-  document.getElementById('smsResultText').textContent=result;
-  document.getElementById('smsResult').style.display='block';
-  document.getElementById('smsCopied').style.display='none';
-}
-function copySms(){
-  const text=document.getElementById('smsResultText').textContent;
-  navigator.clipboard.writeText(text).then(()=>{
-    const msg=document.getElementById('smsCopied');
-    msg.style.display='block';
-    setTimeout(()=>msg.style.display='none',2000);
-  }).catch(()=>{
-    // 클립보드 API 미지원 시 fallback
-    const ta=document.createElement('textarea');
-    ta.value=text;document.body.appendChild(ta);ta.select();
-    document.execCommand('copy');document.body.removeChild(ta);
-    const msg=document.getElementById('smsCopied');
-    msg.style.display='block';
-    setTimeout(()=>msg.style.display='none',2000);
-  });
 }
 
 // ─── 파일들 ───
@@ -936,15 +781,11 @@ async function applyOgMeta(){
   if(info&&info.data){document.getElementById('ogMetaImage').setAttribute('content',info.data);document.getElementById('twitterMetaImage').setAttribute('content',info.data);}
 }
 
-// 초기 로드 (localStorage는 즉시 사용 가능)
-async function init() {
+async function init(){
   await loadCourseDropdown();
   await loadSchedule();
   await loadQrDisplay();
   await applyOgMeta();
-
-  // 버튼 이벤트 직접 바인딩
-  document.getElementById('addCourseBtn').addEventListener('click', addCourse);
 }
 init();
 </script>
